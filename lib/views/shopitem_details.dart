@@ -26,7 +26,6 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
     return EcomstoreScaffold(body: buildShopItemDetailsWidget(context));
   }
 
-  int quantity = 1;
   List<bool> isSelected = [true, false, false, false];
 
   final double iconSize = 40.0;
@@ -249,9 +248,9 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                                   backgroundColor: MaterialStateProperty.all(
                                       colorLogo[100])),
                               onPressed: () {
-                                if (quantity == 1) return;
+                                if (shopItem.quantity == 1) return;
                                 setState(() {
-                                  quantity -= 1;
+                                  shopItem.quantity -= 1;
                                 });
                               },
                               child: Text(
@@ -270,7 +269,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                                       MaterialStateProperty.all(Colors.white)),
                               onPressed: null,
                               child: Text(
-                                quantity.toString(),
+                                shopItem.quantity.toString(),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: height * 0.02,
@@ -286,7 +285,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                                       colorLogo[100])),
                               onPressed: () {
                                 setState(() {
-                                  quantity += 1;
+                                  shopItem.quantity += 1;
                                 });
                               },
                               child: Text(
@@ -317,11 +316,16 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: MaterialButton(
                     color: kLogoColor,
-                    onPressed: () {
-                      cartProvider.addToCart(shopItem);
-                    },
+                    onPressed: cartProvider.shopItems.contains(shopItem)
+                        ? null
+                        : () {
+                            cartProvider.addToCart(shopItem);
+                          },
+                    disabledColor: colorLogo[400],
                     child: Text(
-                      "Add To Cart",
+                      cartProvider.shopItems.contains(shopItem)
+                          ? "Added successfully!"
+                          : "Add To Cart",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

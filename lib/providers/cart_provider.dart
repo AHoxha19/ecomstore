@@ -18,14 +18,17 @@ class CartProvider extends ChangeNotifier {
   List<ShopItem> get shopItems => _cartShopItems;
 
   void addToCart(ShopItem shopItem) {
-    _cartShopItems.add(shopItem);
-    _showBadge = true;
-    notifyListeners();
+    if (!_cartShopItems.contains(shopItem)) {
+      _cartShopItems.add(shopItem);
+      _showBadge = true;
+      notifyListeners();
+    }
   }
 
   void removeFromCart(ShopItem shopItem) {
     if (_cartShopItems.contains(shopItem)) {
       _cartShopItems.remove(shopItem);
+      notifyListeners();
     }
     if (_cartShopItems.isEmpty) {
       _showBadge = false;

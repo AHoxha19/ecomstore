@@ -31,6 +31,7 @@ final kLogoColorPrimarySwatch = MaterialColor(0xFFb8a076, colorLogo);
 final kWhiteColorPrimarySwatch = MaterialColor(0xFFFFFFFF, colorWhite);
 
 const kLogoColor = Color(0xFFb8a076);
+const kTotalColor = Color(0xFFFFDDA3);
 
 const kFirstShopItemColor = Color(0xFFf6be9a);
 const kSecondShopItemColor = Color(0xFF8a2233);

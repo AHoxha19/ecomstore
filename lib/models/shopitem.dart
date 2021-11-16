@@ -3,6 +3,7 @@ class ShopItem {
   final String category;
   final String imageUrl;
   final double price;
+  int quantity = 1;
 
   ShopItem(
       {required this.name,
@@ -23,6 +24,16 @@ class ShopItem {
       'category': category,
       'imageUrl': imageUrl,
       'price': price,
+      'quantity': quantity,
     };
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is ShopItem) {
+      return other.name == name;
+    } else {
+      return false;
+    }
   }
 }

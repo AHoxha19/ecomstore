@@ -8,6 +8,7 @@ import 'package:ecomstore/views/profile.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -129,14 +130,12 @@ class _EcomstoreHomePageState extends State<EcomstoreHomePage> {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.widgets,
-          ),
+          icon: Icon(CupertinoIcons.cube_box_fill),
           label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.favorite,
+            CupertinoIcons.heart_fill,
           ),
           label: 'Favorite',
         ),
@@ -148,15 +147,15 @@ class _EcomstoreHomePageState extends State<EcomstoreHomePage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   badgeColor: kLogoColor,
-                  child: Icon(Icons.shopping_bag_rounded))
+                  child: Icon(CupertinoIcons.bag_fill))
               : Icon(
-                  Icons.shopping_bag_rounded,
+                  CupertinoIcons.bag_fill,
                 ),
           label: 'Cart',
         ),
         BottomNavigationBarItem(
           icon: Icon(
-            Icons.account_circle,
+            CupertinoIcons.profile_circled,
           ),
           label: 'Profile',
         ),
