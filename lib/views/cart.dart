@@ -1,5 +1,6 @@
 import 'package:ecomstore/constants/colors.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
+import 'package:ecomstore/providers/ecom_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,6 +18,7 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final cartProvider = Provider.of<CartProvider>(context);
+    final ecomProvider = Provider.of<EcomProvider>(context);
 
     if (cartProvider.shopItems.isEmpty) {
       return Center(
@@ -94,7 +96,10 @@ class CartView extends StatelessWidget {
               width: double.infinity,
               height: height * 0.06,
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //TODO: Stripe API
+                    //Remove all items in favorite
+                  },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(kLogoColor)),
                   child: Text(

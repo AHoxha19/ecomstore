@@ -1,6 +1,7 @@
 import 'package:ecomstore/constants/colors.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/views/cart.dart';
 import 'package:ecomstore/views/favorite.dart';
 import 'package:ecomstore/views/home.dart';
@@ -56,7 +57,8 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
             return MultiProvider(
               providers: [
                 ChangeNotifierProvider(create: (_) => EcomProvider()),
-                ChangeNotifierProvider(create: (_) => CartProvider())
+                ChangeNotifierProvider(create: (_) => CartProvider()),
+                ChangeNotifierProvider(create: (_) => FavoriteProvider()),
               ],
               child: MaterialApp(
                 title: 'Ecomstore',

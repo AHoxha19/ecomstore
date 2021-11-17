@@ -1,6 +1,8 @@
 import 'package:ecomstore/constants/colors.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
+import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,12 @@ class ShopItemDetails extends StatefulWidget {
 
 class _ShopItemDetailsState extends State<ShopItemDetails> {
   late CartProvider cartProvider;
+  late EcomProvider ecomProvider;
 
   @override
   Widget build(BuildContext context) {
     cartProvider = Provider.of<CartProvider>(context);
+    ecomProvider = Provider.of<EcomProvider>(context);
     return EcomstoreScaffold(body: buildShopItemDetailsWidget(context));
   }
 
@@ -34,10 +38,29 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
     size: 40.0,
   );
 
+  void setIconFavorite() {
+    heartIcon = Icon(
+      CupertinoIcons.heart_fill,
+      color: Colors.red,
+      size: iconSize,
+    );
+  }
+
+  void unsetIconFavorite() {
+    heartIcon = Icon(
+      CupertinoIcons.heart,
+      size: iconSize,
+    );
+  }
+
   buildShopItemDetailsWidget(context) {
     //the container takes the space available
     final height = MediaQuery.of(context).size.height;
+    final favoriteProvider = Provider.of<FavoriteProvider>(context);
     final shopItem = ModalRoute.of(context)!.settings.arguments as ShopItem;
+
+    shopItem.favorite ? setIconFavorite() : unsetIconFavorite();
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,24 +94,30 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                         ),
                         GestureDetector(
                             onTap: () {
-                              heartIcon = heartIcon.icon == CupertinoIcons.heart
-                                  ? Icon(
-                                      CupertinoIcons.heart_fill,
-                                      color: Colors.red,
-                                      size: iconSize,
-                                    )
-                                  : Icon(
-                                      CupertinoIcons.heart,
-                                      size: iconSize,
-                                    );
-                              setState(() {});
+                              bool tmp = shopItem.favorite;
+                              shopItem.favorite = !shopItem.favorite;
+                              ecomProvider.setFavorite(shopItem).then((_) {
+                                if (heartIcon.icon == CupertinoIcons.heart) {
+                                  setIconFavorite();
+                                  shopItem.favorite = true;
+                                  //favoriteProvider.addToFavorite(shopItem);
+                                } else {
+                                  unsetIconFavorite();
+                                  shopItem.favorite = false;
+                                  //favoriteProvider.removeFromFavorite(shopItem);
+                                }
+
+                                setState(() {});
+                              }).catchError((error) {
+                                shopItem.favorite = tmp;
+                              });
                             },
                             child: heartIcon)
                       ],
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
                   child: Text(
                       "Yeezy Boost is a hybrid sneaker/bootie/clog shoe from Adidas, introduced as a fashion item first and a sporting item second. Its first official release was on December 28th, 2016, yielding a large social media following, as well as a strict demand for places to buy them"),

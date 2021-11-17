@@ -1,18 +1,21 @@
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FavoriteProvider extends ChangeNotifier {
-  final List<ShopItem> _cartShopItems = [];
+  final List<ShopItem> _favoriteShopItems = [];
+
+  List<ShopItem> get favoriteShopItems => _favoriteShopItems;
 
   void addToFavorite(ShopItem shopItem) {
-    _cartShopItems.add(shopItem);
-    notifyListeners();
+    if (!_favoriteShopItems.contains(shopItem)) {
+      _favoriteShopItems.add(shopItem);
+      notifyListeners();
+    }
   }
 
   void removeFromFavorite(ShopItem shopItem) {
-    if (_cartShopItems.contains(shopItem)) {
-      _cartShopItems.remove(shopItem);
+    if (_favoriteShopItems.contains(shopItem)) {
+      _favoriteShopItems.remove(shopItem);
       notifyListeners();
     }
   }

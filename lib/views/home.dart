@@ -5,7 +5,6 @@ import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -34,19 +33,22 @@ class _HomeViewState extends State<HomeView> {
 
   String selectedCategory = "All";
 
-  void setShopItemsList() {
+  void setShopItemsList(List<ShopItem> shopItemsSnapshot) {
     switch (selectedCategory) {
       case "All":
-        shopItems = _ecomProvider.getShopItems();
+        shopItems = shopItemsSnapshot;
         break;
       case "Hat":
-        shopItems = _ecomProvider.getAllHats();
+        shopItems =
+            shopItemsSnapshot.where((s) => s.category == "hat").toList();
         break;
       case "Jacket":
-        shopItems = _ecomProvider.getAllJackets();
+        shopItems =
+            shopItemsSnapshot.where((s) => s.category == "jacket").toList();
         break;
       case "Sneaker":
-        shopItems = _ecomProvider.getAllSneakers();
+        shopItems =
+            shopItemsSnapshot.where((s) => s.category == "sneaker").toList();
         break;
     }
   }
@@ -58,17 +60,19 @@ class _HomeViewState extends State<HomeView> {
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
     final double itemWidth = size.width / 2;
     _ecomProvider = Provider.of<EcomProvider>(context);
-    return FutureBuilder(
-        future: _ecomProvider.getShopItemsFromFirebase(),
+    return StreamBuilder<List<ShopItem>>(
+        stream: _ecomProvider.streamShopItems(),
         builder: (context, snapshot) {
+          print("shop rebuild");
           if (snapshot.hasError) {
+            print("${snapshot.data}");
             //show Error
             return Center(
-              child: Text("Error getting Shop Items"),
+              child: Text("Error getting Shop Items:\n ${snapshot.error}"),
             );
           }
           if (snapshot.hasData) {
-            setShopItemsList();
+            setShopItemsList(snapshot.data as List<ShopItem>);
             return Container(
               color: Colors.grey.shade100,
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -99,7 +103,8 @@ class _HomeViewState extends State<HomeView> {
                                 setState(() {
                                   selectedIndex = index;
                                   selectedCategory = items[index];
-                                  setShopItemsList();
+                                  setShopItemsList(
+                                      snapshot.data as List<ShopItem>);
                                 });
                               });
                         },
