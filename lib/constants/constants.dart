@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+///*****  COLORS  *****
+
 Map<int, Color> colorLogo = {
   50: const Color(0xFFF6F4EF),
   100: const Color(0xFFEAE3D6),

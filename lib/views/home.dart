@@ -1,182 +1,93 @@
-import 'package:ecomstore/constants/colors.dart';
-import 'package:ecomstore/models/shopitem.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
-import 'package:ecomstore/views/shopitem_details.dart';
-import 'package:ecomstore/widgets/category_item.dart';
+import 'package:badges/badges.dart';
+import 'package:ecomstore/constants/constants.dart';
+import 'package:ecomstore/providers/cart_provider.dart';
+import 'package:ecomstore/views/profile.dart';
+import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'cart.dart';
+import 'catalog.dart';
+import 'favorite.dart';
 
 class HomeView extends StatefulWidget {
-  HomeView({
-    Key? key,
-    required this.optionStyle,
-  }) : super(key: key);
-
-  final TextStyle optionStyle;
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  int selectedIndex = 0;
-  late EcomProvider _ecomProvider;
-  List<ShopItem> shopItems = [];
+  int _selectedIndex = 0;
+  late CartProvider cartProvider;
 
-  final List<String> items = [
-    "All",
-    "Hat",
-    "Jacket",
-    "Sneaker",
+  final List<Widget> _widgetOptions = <Widget>[
+    CatalogView(),
+    FavoriteView(),
+    CartView(),
+    ProfileView()
   ];
 
-  String selectedCategory = "All";
-
-  void setShopItemsList(List<ShopItem> shopItemsSnapshot) {
-    switch (selectedCategory) {
-      case "All":
-        shopItems = shopItemsSnapshot;
-        break;
-      case "Hat":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "hat").toList();
-        break;
-      case "Jacket":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "jacket").toList();
-        break;
-      case "Sneaker":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "sneaker").toList();
-        break;
-    }
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (_selectedIndex == 2) {
+        cartProvider.showBadge = false;
+      } else {
+        cartProvider.showBadge = true;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width / 2;
-    _ecomProvider = Provider.of<EcomProvider>(context);
-    return StreamBuilder<List<ShopItem>>(
-        stream: _ecomProvider.streamShopItems(),
-        builder: (context, snapshot) {
-          print("shop rebuild");
-          if (snapshot.hasError) {
-            print("${snapshot.data}");
-            //show Error
-            return Center(
-              child: Text("Error getting Shop Items:\n ${snapshot.error}"),
-            );
-          }
-          if (snapshot.hasData) {
-            setShopItemsList(snapshot.data as List<ShopItem>);
-            return Container(
-              color: Colors.grey.shade100,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Browse By Category",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
-                  Container(
-                      height: 35,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          return CategoryListItem(
-                              title: items[index],
-                              isSelected: selectedIndex == index,
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                  selectedCategory = items[index];
-                                  setShopItemsList(
-                                      snapshot.data as List<ShopItem>);
-                                });
-                              });
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(
-                            width: 10.0,
-                          );
-                        },
-                      )),
-                  SizedBox(
-                    height: size.height * 0.03,
-                  ),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: (itemWidth / itemHeight),
-                      children: shopItems
-                          .map((s) => GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, ShopItemDetails.routeName,
-                                      arguments: s);
-                                },
-                                child: Card(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 325,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image:
-                                                    NetworkImage(s.imageUrl))),
-                                      ),
-                                      const Divider(
-                                        height: 3,
-                                        color: kLogoColor,
-                                        thickness: 3,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 8.0),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                s.name,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text("${s.price.toString()} CHF")
-                                            ]),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                  )
-                ],
-              ),
-            );
-          }
+    cartProvider = Provider.of<CartProvider>(context);
+    return EcomstoreScaffold(
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: buildBottomNavigationBar(),
+    );
+  }
 
-          return const Center(
-            child: Text("Data"),
-          );
-        });
+  BottomNavigationBar buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.cube_box_fill),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            CupertinoIcons.heart_fill,
+          ),
+          label: 'Favorite',
+        ),
+        BottomNavigationBarItem(
+          icon: cartProvider.showBadge
+              ? Badge(
+                  badgeContent: Text(
+                    "${cartProvider.shopItems.length}",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  badgeColor: kLogoColor,
+                  child: Icon(CupertinoIcons.bag_fill))
+              : Icon(
+                  CupertinoIcons.bag_fill,
+                ),
+          label: 'Cart',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(
+            CupertinoIcons.profile_circled,
+          ),
+          label: 'Profile',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      selectedItemColor: Colors.black,
+      selectedIconTheme: const IconThemeData(color: Colors.black),
+      unselectedItemColor: Colors.grey[300],
+      backgroundColor: Colors.black,
+      onTap: _onItemTapped,
+    );
   }
 }

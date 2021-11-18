@@ -1,4 +1,4 @@
-import 'package:ecomstore/constants/colors.dart';
+import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,10 +9,7 @@ import 'package:provider/provider.dart';
 class CartView extends StatelessWidget {
   const CartView({
     Key? key,
-    required this.optionStyle,
   }) : super(key: key);
-
-  final TextStyle optionStyle;
 
   @override
   Widget build(BuildContext context) {

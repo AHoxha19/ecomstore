@@ -1,4 +1,4 @@
-import 'package:ecomstore/constants/colors.dart';
+import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';

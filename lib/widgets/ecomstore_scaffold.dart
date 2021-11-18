@@ -1,4 +1,4 @@
-import 'package:ecomstore/constants/colors.dart';
+import 'package:ecomstore/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class EcomstoreScaffold extends StatelessWidget {

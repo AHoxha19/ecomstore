@@ -10,10 +10,7 @@ import 'package:provider/provider.dart';
 class FavoriteView extends StatelessWidget {
   const FavoriteView({
     Key? key,
-    required this.optionStyle,
   }) : super(key: key);
-
-  final TextStyle optionStyle;
 
   @override
   Widget build(BuildContext context) {
