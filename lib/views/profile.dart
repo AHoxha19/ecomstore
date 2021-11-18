@@ -1,7 +1,7 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/auth_provider.dart';
 import 'package:ecomstore/utils/show_state.dart';
-import 'package:ecomstore/widgets/profile_menu.dart';
+import 'package:ecomstore/widgets/profile_info.dart';
 import 'package:ecomstore/widgets/profile_pic.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,8 +48,9 @@ class _ProfileViewState extends State<ProfileView> {
     user = Provider.of<User?>(context);
     final authProvider = Provider.of<AuthProvider>(context);
     print(user!.photoURL);
+    print(user!.displayName);
 
-    return Center(
+    return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
@@ -62,14 +63,29 @@ class _ProfileViewState extends State<ProfileView> {
           SizedBox(
             height: height * 0.05,
           ),
-          ProfileMenu(
-              text:
-                  "${user!.displayName ?? "DisplayName is not set, click to edit..."}",
-              icon: CupertinoIcons.profile_circled),
+          ProfileInfo(
+              text: user!.displayName ??
+                  "DisplayName is not set, click to edit...",
+              icon: CupertinoIcons.profile_circled,
+              type: ProfileInfoType.displayName,
+              onSubmitted: (value) async {
+                try {
+                  await user!.updateDisplayName(value);
+                  showSnackbarSuccess(
+                      context, "DisplayName changed successfully!");
+                } catch (e) {
+                  print(e);
+                  showSnackbarError(context, "An error occured");
+                }
+              }),
           SizedBox(
             height: height * 0.02,
           ),
-          ProfileMenu(text: "${user!.email}", icon: CupertinoIcons.mail),
+          ProfileInfo(
+            text: "${user!.email}",
+            icon: CupertinoIcons.mail,
+            type: ProfileInfoType.email,
+          ),
           SizedBox(
             height: height * 0.05,
           ),

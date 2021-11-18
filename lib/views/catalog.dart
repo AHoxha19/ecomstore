@@ -60,7 +60,6 @@ class _CatalogViewState extends State<CatalogView> {
     return StreamBuilder<List<ShopItem>>(
         stream: _ecomProvider.streamShopItems(),
         builder: (context, snapshot) {
-          print("shop rebuild");
           if (snapshot.hasError) {
             print("${snapshot.data}");
             //show Error

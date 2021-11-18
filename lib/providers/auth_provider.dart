@@ -7,6 +7,7 @@ class AuthProvider {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Stream<User?> get authState => _firebaseAuth.idTokenChanges();
+  Stream<User?> get userChanges => _firebaseAuth.userChanges();
 
   Future<String> signIn(
       {required String email, required String password}) async {

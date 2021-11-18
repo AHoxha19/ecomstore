@@ -59,6 +59,8 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                 ),
                 StreamProvider<User?>.value(
                     value: AuthProvider().authState, initialData: null),
+                StreamProvider<User?>.value(
+                    value: AuthProvider().userChanges, initialData: null),
                 ChangeNotifierProvider(create: (_) => EcomProvider()),
                 ChangeNotifierProvider(create: (_) => CartProvider()),
               ],

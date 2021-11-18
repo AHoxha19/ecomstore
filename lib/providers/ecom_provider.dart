@@ -19,7 +19,6 @@ class EcomProvider extends ChangeNotifier {
   }
 
   Stream<List<ShopItem>> streamShopItems() {
-    print("stream called");
     var ref = _firestore.collection(SHOPITEMS_COLLECTION_NAME);
     return ref.snapshots().map((list) =>
         list.docs.map((doc) => ShopItem.fromJson(doc.data())).toList());

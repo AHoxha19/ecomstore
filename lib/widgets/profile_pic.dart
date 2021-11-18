@@ -2,13 +2,14 @@ import 'package:ecomstore/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//Modified version of: https://github.com/abuanwar072/E-commerce-Complete-Flutter-UI/blob/master/lib/screens/profile/components/profile_pic.dart
+
 class ProfilePic extends StatelessWidget {
   ProfilePic({
     Key? key,
     String? imagePath,
     required this.onImageEdit,
   }) : super(key: key) {
-    print("constructor");
     if (imagePath != null) {
       this.imagePath = imagePath;
     } else {
