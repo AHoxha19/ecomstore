@@ -2,23 +2,16 @@ import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/auth_provider.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
-import 'package:ecomstore/providers/favorite_provider.dart';
-import 'package:ecomstore/views/cart.dart';
-import 'package:ecomstore/views/favorite.dart';
-import 'package:ecomstore/views/catalog.dart';
 import 'package:ecomstore/views/home.dart';
 import 'package:ecomstore/views/sign_in.dart';
-import 'package:ecomstore/views/profile.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/views/sign_up.dart';
-import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:badges/badges.dart';
 
 void main() {
   //Used for firebase
@@ -68,7 +61,6 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                     value: AuthProvider().authState, initialData: null),
                 ChangeNotifierProvider(create: (_) => EcomProvider()),
                 ChangeNotifierProvider(create: (_) => CartProvider()),
-                ChangeNotifierProvider(create: (_) => FavoriteProvider()),
               ],
               child: MaterialApp(
                 title: 'Ecomstore',

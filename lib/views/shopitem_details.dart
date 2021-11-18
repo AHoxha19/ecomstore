@@ -2,7 +2,6 @@ import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
-import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +55,6 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
   buildShopItemDetailsWidget(context) {
     //the container takes the space available
     final height = MediaQuery.of(context).size.height;
-    final favoriteProvider = Provider.of<FavoriteProvider>(context);
     final shopItem = ModalRoute.of(context)!.settings.arguments as ShopItem;
 
     shopItem.favorite ? setIconFavorite() : unsetIconFavorite();

@@ -17,6 +17,11 @@ class CartProvider extends ChangeNotifier {
 
   List<ShopItem> get shopItems => _cartShopItems;
 
+  void pay() {
+    _cartShopItems.clear();
+    notifyListeners();
+  }
+
   void addToCart(ShopItem shopItem) {
     if (!_cartShopItems.contains(shopItem)) {
       _cartShopItems.add(shopItem);

@@ -1,6 +1,6 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/auth_provider.dart';
-import 'package:ecomstore/utils/show_error.dart';
+import 'package:ecomstore/utils/show_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

@@ -39,3 +39,5 @@ const kFirstShopItemColor = Color(0xFFf6be9a);
 const kSecondShopItemColor = Color(0xFF8a2233);
 const kThirdShopItemColor = Color(0xFF195f7a);
 const kFourthShopItemColor = Color(0xFFc6c1bc);
+const kSuccessColor = Color(0xFF4caf50);
+final kErrorColor = Colors.red[700];

@@ -1,6 +1,5 @@
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
-import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

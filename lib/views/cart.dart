@@ -1,6 +1,7 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/widgets/payment_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,8 +15,11 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     final cartProvider = Provider.of<CartProvider>(context);
     final ecomProvider = Provider.of<EcomProvider>(context);
+    final double total = cartProvider.shopItems.fold(
+        0, (num prev, element) => prev + element.quantity * element.price);
 
     if (cartProvider.shopItems.isEmpty) {
       return Center(
@@ -81,8 +85,7 @@ class CartView extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   TextSpan(
-                      text:
-                          "${cartProvider.shopItems.fold(0, (num prev, element) => prev + element.quantity * element.price)} CHF",
+                      text: "${total} CHF",
                       style: TextStyle(color: kTotalColor))
                 ]))),
           ),
@@ -94,8 +97,31 @@ class CartView extends StatelessWidget {
               height: height * 0.06,
               child: ElevatedButton(
                   onPressed: () {
-                    //TODO: Stripe API
                     //Remove all items in favorite
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return PaymentDialog(
+                              total: total,
+                              content: Container(
+                                height: height * 0.2,
+                                width: width * 0.2,
+                                child: ListView(
+                                  children: cartProvider.shopItems
+                                      .map((s) => ListTile(
+                                            title: Text(s.name),
+                                            trailing:
+                                                Text("${s.price * s.quantity}"),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                              onPay: () async {
+                                await ecomProvider
+                                    .removeFavorites(cartProvider.shopItems);
+                                cartProvider.pay();
+                              });
+                        });
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(kLogoColor)),
