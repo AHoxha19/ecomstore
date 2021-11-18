@@ -46,8 +46,7 @@ class EcomProvider extends ChangeNotifier {
   }
 
   Future<void> removeFavorites(List<ShopItem> shopItems) async {
-    print("Shop items to remove from favorite");
-    print(shopItems);
+    if (shopItems.isEmpty) return;
     for (var s in shopItems) {
       s.favorite = false;
       await setFavorite(s);

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow Ecomstore to access Photo Library in order to change the profile photo.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Allow Flutter tools on your computer to connect and debug your application.</string>
 	<key>NSBonjourServices</key>
