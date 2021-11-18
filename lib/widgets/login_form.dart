@@ -36,6 +36,7 @@ class _LoginFormState extends State<LoginForm> {
         children: <Widget>[
           TextFormField(
             controller: emailController,
+            cursorColor: Colors.grey,
             decoration: buildInputDecoration(labelText: "Email"),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -49,6 +50,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           TextFormField(
             obscureText: true,
+            cursorColor: Colors.grey,
             controller: passwordController,
             decoration: buildInputDecoration(labelText: "Password"),
             validator: (value) {
