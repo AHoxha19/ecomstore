@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class ProfileView extends StatefulWidget {
-  ProfileView({
+  const ProfileView({
     Key? key,
   }) : super(key: key);
 
@@ -31,12 +31,10 @@ class _ProfileViewState extends State<ProfileView> {
         firebase_storage.FirebaseStorage.instance.ref("user_image");
 
     try {
-      print("upload image");
       final taskSnapshot = await fileRef.putFile(file);
       final downloadUrl = await taskSnapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print("upload file error: $e");
       //could not upload image;
       rethrow;
     }
@@ -45,10 +43,6 @@ class _ProfileViewState extends State<ProfileView> {
   void editProfileImage() async {
     try {
       pickedImage = await _picker.pickImage(source: ImageSource.gallery);
-      print(pickedImage!.name);
-      print(pickedImage!.path);
-      print("Hello there");
-
       //now upload to Firebase
       if (pickedImage != null) {
         //first update to storage and get URL
@@ -59,7 +53,6 @@ class _ProfileViewState extends State<ProfileView> {
       }
       setState(() {});
     } catch (e) {
-      print(e);
       showSnackbarError(context, e.toString());
     }
   }
@@ -71,8 +64,6 @@ class _ProfileViewState extends State<ProfileView> {
     final height = MediaQuery.of(context).size.height;
     user = Provider.of<User?>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-    print("User data: $user");
-
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -97,7 +88,6 @@ class _ProfileViewState extends State<ProfileView> {
                   showSnackbarSuccess(
                       context, "DisplayName changed successfully!");
                 } catch (e) {
-                  print(e);
                   showSnackbarError(context, "An error occured");
                 }
               }),

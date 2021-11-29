@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignInView extends StatefulWidget {
-  SignInView({Key? key}) : super(key: key);
+  const SignInView({Key? key}) : super(key: key);
 
   @override
   State<SignInView> createState() => _SignInViewState();
@@ -18,11 +18,9 @@ class _SignInViewState extends State<SignInView> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final authValue =
         await authProvider.signIn(email: email, password: password);
-    if (authValue == AuthProvider.authOperationSuccessful) {
-      print("Navigate to HomePage");
-    } else {
+
+    if (authValue != AuthProvider.authOperationSuccessful)
       showSnackbarError(context, authValue);
-    }
   }
 
   @override

@@ -12,7 +12,7 @@ import 'favorite.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
-
+  static const routeName = '/home';
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -22,10 +22,10 @@ class _HomeViewState extends State<HomeView> {
   late CartProvider cartProvider;
 
   final List<Widget> _widgetOptions = <Widget>[
-    CatalogView(),
-    FavoriteView(),
-    CartView(),
-    ProfileView()
+    const CatalogView(),
+    const FavoriteView(),
+    const CartView(),
+    const ProfileView()
   ];
 
   void _onItemTapped(int index) {
@@ -51,11 +51,11 @@ class _HomeViewState extends State<HomeView> {
   BottomNavigationBar buildBottomNavigationBar() {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(CupertinoIcons.cube_box_fill),
           label: 'Home',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             CupertinoIcons.heart_fill,
           ),
@@ -66,16 +66,16 @@ class _HomeViewState extends State<HomeView> {
               ? Badge(
                   badgeContent: Text(
                     "${cartProvider.shopItems.length}",
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   badgeColor: kLogoColor,
-                  child: Icon(CupertinoIcons.bag_fill))
-              : Icon(
+                  child: const Icon(CupertinoIcons.bag_fill))
+              : const Icon(
                   CupertinoIcons.bag_fill,
                 ),
           label: 'Cart',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             CupertinoIcons.profile_circled,
           ),

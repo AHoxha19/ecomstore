@@ -35,7 +35,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
     return SizedBox(
         width: width,
         height: height,
-        child: Center(
+        child: const Center(
           child: CircularProgressIndicator(
             color: kLogoColor,
           ),
@@ -47,7 +47,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
       width: width,
       height: height,
       child: Column(
-        children: [
+        children: const [
           Icon(
             Icons.done,
             size: 100,
@@ -59,8 +59,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
     );
   }
 
-  void salut() {}
-
   @override
   void initState() {
     super.initState();
@@ -68,7 +66,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
   }
 
   void startTimer(width, height) {
-    _timer = Timer(Duration(seconds: 2), () {
+    _timer = Timer(const Duration(seconds: 2), () {
       setState(() {
         contentToShow = buildSuccessPayment(width, height);
         widget.onPay();
@@ -83,7 +81,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return AlertDialog(
-        title: Text("Confirmation"),
+        title: const Text("Confirmation"),
         content: contentToShow,
         actions: paymentState == PaymentState.done ||
                 paymentState == PaymentState.loading

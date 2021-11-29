@@ -44,4 +44,4 @@ final kErrorColor = Colors.red[700];
 
 final transparentOutlineBorders = OutlineInputBorder(
     borderRadius: BorderRadius.circular(15),
-    borderSide: BorderSide(color: Colors.transparent));
+    borderSide: const BorderSide(color: Colors.transparent));

@@ -1,7 +1,6 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/auth_provider.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
 import 'package:ecomstore/views/home.dart';
 import 'package:ecomstore/views/sign_in.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
@@ -27,10 +26,7 @@ class EcomstoreApp extends StatefulWidget {
 }
 
 class _EcomstoreAppState extends State<EcomstoreApp> {
-  /// The future is part of the state of our widget. We should not call `initializeApp`
-  /// directly inside [build].
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -44,7 +40,7 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                   child: Center(
                       child: Text(
                     "Error when initializing Firebase SDK:\n${snapshot.error}",
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   )),
                 ),
               ),
@@ -61,7 +57,6 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                     value: AuthProvider().authState, initialData: null),
                 StreamProvider<User?>.value(
                     value: AuthProvider().userChanges, initialData: null),
-                ChangeNotifierProvider(create: (_) => EcomProvider()),
                 ChangeNotifierProvider(create: (_) => CartProvider()),
               ],
               child: MaterialApp(
@@ -74,11 +69,12 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                   ),
                 ),
                 routes: {
+                  HomeView.routeName: (context) => const HomeView(),
                   SignUpView.routeName: (context) => const SignUpView(),
                   ShopItemDetails.routeName: (context) =>
                       const ShopItemDetails()
                 },
-                home: Authenticate(),
+                home: const Authenticate(),
               ),
             );
           }
@@ -101,8 +97,8 @@ class Authenticate extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
     if (user != null) {
-      return HomeView();
+      return const HomeView();
     }
-    return SignInView();
+    return const SignInView();
   }
 }

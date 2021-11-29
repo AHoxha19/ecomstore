@@ -1,11 +1,10 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/services/ecomstore_service.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class CatalogView extends StatefulWidget {
   const CatalogView({
@@ -18,7 +17,6 @@ class CatalogView extends StatefulWidget {
 
 class _CatalogViewState extends State<CatalogView> {
   int selectedIndex = 0;
-  late EcomProvider _ecomProvider;
   List<ShopItem> shopItems = [];
 
   final List<String> items = [
@@ -53,17 +51,11 @@ class _CatalogViewState extends State<CatalogView> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
-    print("Height: ${size.height - 100}, Width: ${size.width}");
-
-    print(size.width / (size.height - 170));
-
-    _ecomProvider = Provider.of<EcomProvider>(context);
+    final ecomstoreService = EcomstoreService.instance;
     return StreamBuilder<List<ShopItem>>(
-        stream: _ecomProvider.streamShopItems(),
+        stream: ecomstoreService.streamShopItems(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            print("${snapshot.data}");
             //show Error
             return Center(
               child: Text("Error getting Shop Items:\n ${snapshot.error}"),
@@ -73,7 +65,7 @@ class _CatalogViewState extends State<CatalogView> {
             setShopItemsList(snapshot.data as List<ShopItem>);
             return Container(
               color: Colors.grey.shade100,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Column(
                 children: [
                   Row(
@@ -88,7 +80,7 @@ class _CatalogViewState extends State<CatalogView> {
                   SizedBox(
                     height: size.height * 0.02,
                   ),
-                  Container(
+                  SizedBox(
                       height: 35,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,

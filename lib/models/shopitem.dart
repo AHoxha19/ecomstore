@@ -55,14 +55,24 @@ class ShopItem {
 
   @override
   String toString() {
-    return 'ShopItem{' +
-        ' id: $id,' +
-        ' name: $name,' +
-        ' category: $category,' +
-        ' imageUrl: $imageUrl,' +
-        ' price: $price,' +
-        ' favorite: $favorite,' +
-        ' quantity: $quantity,' +
+    return 'ShopItem{'
+        ' id: $id,'
+        ' name: $name,'
+        ' category: $category,'
+        ' imageUrl: $imageUrl,'
+        ' price: $price,'
+        ' favorite: $favorite,'
+        ' quantity: $quantity,'
         '}';
   }
+
+  @override
+  int get hashCode =>
+      id.hashCode +
+      name.hashCode +
+      category.hashCode +
+      imageUrl.hashCode +
+      price.hashCode +
+      favorite.hashCode +
+      quantity.hashCode;
 }

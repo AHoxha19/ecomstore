@@ -2,6 +2,7 @@ import 'package:ecomstore/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// enum used to know the type of TextField
 enum ProfileInfoType { displayName, email }
 
 class ProfileInfo extends StatefulWidget {

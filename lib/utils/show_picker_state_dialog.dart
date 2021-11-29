@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 Widget pickerErrorDialog(BuildContext context, String error) {
   return AlertDialog(
-    title: Text("Error"),
-    content: Text(
+    title: const Text("Error"),
+    content: const Text(
       "You must add the permission to access the gallery!  (info.plist or manifest.xml)",
     ),
     actions: [
@@ -11,7 +11,7 @@ Widget pickerErrorDialog(BuildContext context, String error) {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("OK"))
+          child: const Text("OK"))
     ],
   );
 }

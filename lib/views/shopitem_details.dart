@@ -1,7 +1,8 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/services/ecomstore_service.dart';
+import 'package:ecomstore/widgets/color_buttons.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,19 +21,17 @@ class ShopItemDetails extends StatefulWidget {
 
 class _ShopItemDetailsState extends State<ShopItemDetails> {
   late CartProvider cartProvider;
-  late EcomProvider ecomProvider;
+  late EcomstoreService ecomstoreService;
 
   @override
   Widget build(BuildContext context) {
     cartProvider = Provider.of<CartProvider>(context);
-    ecomProvider = Provider.of<EcomProvider>(context);
+    ecomstoreService = EcomstoreService.instance;
     return EcomstoreScaffold(body: buildShopItemDetailsWidget(context));
   }
 
-  List<bool> isSelected = [true, false, false, false];
-
   final double iconSize = 40.0;
-  Icon heartIcon = Icon(
+  Icon heartIcon = const Icon(
     CupertinoIcons.heart,
     size: 40.0,
   );
@@ -53,12 +52,9 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
   }
 
   buildShopItemDetailsWidget(context) {
-    //the container takes the space available
     final height = MediaQuery.of(context).size.height;
     final shopItem = ModalRoute.of(context)!.settings.arguments as ShopItem;
-
     shopItem.favorite ? setIconFavorite() : unsetIconFavorite();
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +66,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                   image: NetworkImage(shopItem.imageUrl), fit: BoxFit.fill),
             ),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +90,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                             onTap: () {
                               bool tmp = shopItem.favorite;
                               shopItem.favorite = !shopItem.favorite;
-                              ecomProvider.setFavorite(shopItem).then((_) {
+                              ecomstoreService.setFavorite(shopItem).then((_) {
                                 if (heartIcon.icon == CupertinoIcons.heart) {
                                   setIconFavorite();
                                   shopItem.favorite = true;
@@ -129,131 +125,17 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                         fontWeight: FontWeight.bold, fontSize: height * 0.02),
                   ),
                 ),
-                Divider(
+                const Divider(
                   color: kLogoColor,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Color",
-                        style: TextStyle(fontSize: height * 0.025),
-                      ),
-                      ToggleButtons(
-                        children: [
-                          Container(
-                            decoration: isSelected[0]
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: kFirstShopItemColor,
-                                    ),
-                                  )
-                                : null,
-                            child: isSelected[0]
-                                ? CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.white,
-                                    child: CircleAvatar(
-                                      backgroundColor: kFirstShopItemColor,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor: kFirstShopItemColor,
-                                    foregroundColor: Colors.white,
-                                  ),
-                          ),
-                          Container(
-                            decoration: isSelected[1]
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: kSecondShopItemColor,
-                                    ),
-                                  )
-                                : null,
-                            child: isSelected[1]
-                                ? CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.white,
-                                    child: CircleAvatar(
-                                      backgroundColor: kSecondShopItemColor,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor: kSecondShopItemColor,
-                                  ),
-                          ),
-                          Container(
-                            decoration: isSelected[2]
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border:
-                                        Border.all(color: kThirdShopItemColor),
-                                  )
-                                : null,
-                            child: isSelected[2]
-                                ? CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.white,
-                                    child: CircleAvatar(
-                                      backgroundColor: kThirdShopItemColor,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor: kThirdShopItemColor,
-                                  ),
-                          ),
-                          Container(
-                            decoration: isSelected[3]
-                                ? BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border:
-                                        Border.all(color: kFourthShopItemColor),
-                                  )
-                                : null,
-                            child: isSelected[3]
-                                ? CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.white,
-                                    child: CircleAvatar(
-                                      backgroundColor: kFourthShopItemColor,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor: kFourthShopItemColor,
-                                  ),
-                          ),
-                        ],
-                        renderBorder: false,
-                        isSelected: isSelected,
-                        onPressed: (int index) {
-                          setState(() {
-                            for (int buttonIndex = 0;
-                                buttonIndex < isSelected.length;
-                                buttonIndex++) {
-                              if (buttonIndex == index) {
-                                isSelected[buttonIndex] = true;
-                              } else {
-                                isSelected[buttonIndex] = false;
-                              }
-                            }
-                          });
-                          print("index is: $index");
-                          print(isSelected[index]);
-                          setState(() {});
-                          print(isSelected);
-                        },
-                      ),
-                    ],
-                  ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: ColorButtons(),
                 ),
                 SizedBox(
                   height: height * 0.02,
                 ),
-                Divider(
+                const Divider(
                   color: kLogoColor,
                 ),
                 Padding(
@@ -331,7 +213,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                 SizedBox(
                   height: height * 0.02,
                 ),
-                Divider(
+                const Divider(
                   color: kLogoColor,
                 ),
                 SizedBox(
@@ -340,7 +222,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                 Container(
                   height: height * 0.08,
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: MaterialButton(
                     color: kLogoColor,
                     onPressed: cartProvider.shopItems.contains(shopItem)
@@ -353,7 +235,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                       cartProvider.shopItems.contains(shopItem)
                           ? "Added successfully!"
                           : "Add To Cart",
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),

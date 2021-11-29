@@ -48,12 +48,12 @@ class ProfilePic extends StatelessWidget {
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50),
-                      side: BorderSide(color: Colors.white),
+                      side: const BorderSide(color: Colors.white),
                     )),
                     backgroundColor: MaterialStateProperty.all(colorLogo[200]),
                     overlayColor: MaterialStateProperty.all(colorLogo[500])),
                 onPressed: () => onImageEdit(),
-                child: Icon(CupertinoIcons.pencil),
+                child: const Icon(CupertinoIcons.pencil),
               ),
             ),
           )

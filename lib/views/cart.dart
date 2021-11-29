@@ -1,6 +1,6 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/services/ecomstore_service.dart';
 import 'package:ecomstore/widgets/payment_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class CartView extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final cartProvider = Provider.of<CartProvider>(context);
-    final ecomProvider = Provider.of<EcomProvider>(context);
+    final ecomstoreService = EcomstoreService.instance;
     final double total = cartProvider.shopItems.fold(
         0, (num prev, element) => prev + element.quantity * element.price);
 
@@ -58,7 +58,7 @@ class CartView extends StatelessWidget {
                     child: ListTile(
                       leading:
                           Image.network(cartProvider.shopItems[index].imageUrl),
-                      title: Text("${cartProvider.shopItems[index].name}"),
+                      title: Text(cartProvider.shopItems[index].name),
                       subtitle: Text(
                           "${cartProvider.shopItems[index].price} CHF x ${cartProvider.shopItems[index].quantity}"),
                       trailing: IconButton(
@@ -66,7 +66,7 @@ class CartView extends StatelessWidget {
                           cartProvider
                               .removeFromCart(cartProvider.shopItems[index]);
                         },
-                        icon: Icon(CupertinoIcons.clear_circled),
+                        icon: const Icon(CupertinoIcons.clear_circled),
                       ),
                     ),
                   );
@@ -80,13 +80,13 @@ class CartView extends StatelessWidget {
                     backgroundColor: MaterialStateProperty.all(Colors.black)),
                 onPressed: () {},
                 child: Text.rich(TextSpan(children: [
-                  TextSpan(
+                  const TextSpan(
                     text: "Total: ",
                     style: TextStyle(color: Colors.white),
                   ),
                   TextSpan(
-                      text: "${total} CHF",
-                      style: TextStyle(color: kTotalColor))
+                      text: "$total CHF",
+                      style: const TextStyle(color: kTotalColor))
                 ]))),
           ),
           SizedBox(
@@ -103,7 +103,7 @@ class CartView extends StatelessWidget {
                         builder: (context) {
                           return PaymentDialog(
                               total: total,
-                              content: Container(
+                              content: SizedBox(
                                 height: height * 0.2,
                                 width: width * 0.2,
                                 child: ListView(
@@ -117,7 +117,7 @@ class CartView extends StatelessWidget {
                                 ),
                               ),
                               onPay: () async {
-                                await ecomProvider
+                                await ecomstoreService
                                     .removeFavorites(cartProvider.shopItems);
                                 cartProvider.pay();
                               });
@@ -125,7 +125,7 @@ class CartView extends StatelessWidget {
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(kLogoColor)),
-                  child: Text(
+                  child: const Text(
                     "Checkout",
                     style: TextStyle(color: Colors.white),
                   )))

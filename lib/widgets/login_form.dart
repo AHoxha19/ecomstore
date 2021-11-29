@@ -72,8 +72,7 @@ class _LoginFormState extends State<LoginForm> {
                 // If the form is valid, display a snackbar. In the real world,
                 // you'd often call a server or save the information in a database.
                 widget.onValidated(
-                    this.emailController.text, this.passwordController.text);
-                //await authProvider.signIn(email: email, password: password)
+                    emailController.text, passwordController.text);
               }
             },
             child: const Text(

@@ -1,10 +1,9 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
-import 'package:ecomstore/providers/ecom_provider.dart';
+import 'package:ecomstore/services/ecomstore_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 /// Display the favorite products
 class FavoriteView extends StatelessWidget {
@@ -15,10 +14,10 @@ class FavoriteView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final ecomProvider = Provider.of<EcomProvider>(context);
+    final ecomstoreService = EcomstoreService.instance;
 
     return StreamBuilder<List<ShopItem>>(
-        stream: ecomProvider.streamShopItems(),
+        stream: ecomstoreService.streamShopItems(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Container();
@@ -64,14 +63,14 @@ class FavoriteView extends StatelessWidget {
                             child: ListTile(
                               leading: Image.network(
                                   favoriteShopItems[index].imageUrl),
-                              title: Text("${favoriteShopItems[index].name}"),
+                              title: Text(favoriteShopItems[index].name),
                               trailing: IconButton(
                                 onPressed: () {
                                   favoriteShopItems[index].favorite = false;
-                                  ecomProvider
+                                  ecomstoreService
                                       .setFavorite(favoriteShopItems[index]);
                                 },
-                                icon: Icon(CupertinoIcons.clear_circled),
+                                icon: const Icon(CupertinoIcons.clear_circled),
                               ),
                             ),
                           );
