@@ -14,13 +14,14 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  late var authProvider;
+
   void signUpUser(email, password) async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final authValue =
         await authProvider.signUp(email: email, password: password);
     if (authValue == AuthProvider.authOperationSuccessful) {
-      showSnackbarSuccess(context, "Sign Up successful, you can now login");
       Navigator.pop(context);
+      showSnackbarSuccess(context, "Sign Up successful, welcome to Ecomstore!");
     } else {
       showSnackbarError(context, authValue);
     }
@@ -28,6 +29,7 @@ class _SignUpViewState extends State<SignUpView> {
 
   @override
   Widget build(BuildContext context) {
+    authProvider = Provider.of<AuthProvider>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(

@@ -35,6 +35,7 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           TextFormField(
+            keyboardType: TextInputType.emailAddress,
             controller: emailController,
             cursorColor: Colors.grey,
             decoration: buildInputDecoration(labelText: "Email"),

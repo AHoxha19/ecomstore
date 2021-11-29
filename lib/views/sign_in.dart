@@ -8,23 +8,25 @@ import 'package:provider/provider.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({Key? key}) : super(key: key);
-
+  static const routeName = '/signIn';
   @override
   State<SignInView> createState() => _SignInViewState();
 }
 
 class _SignInViewState extends State<SignInView> {
+  late var authProvider;
+
   void signInUser(email, password) async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final authValue =
         await authProvider.signIn(email: email, password: password);
-
-    if (authValue != AuthProvider.authOperationSuccessful)
+    if (authValue != AuthProvider.authOperationSuccessful) {
       showSnackbarError(context, authValue);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    authProvider = Provider.of<AuthProvider>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(

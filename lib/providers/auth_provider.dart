@@ -3,6 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthProvider {
   static const authOperationSuccessful = "success";
 
+  static final AuthProvider _authProvider = AuthProvider._internal();
+  AuthProvider._internal();
+  static AuthProvider get instance => _authProvider;
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Stream<User?> get authState => _firebaseAuth.idTokenChanges();
@@ -30,11 +34,13 @@ class AuthProvider {
     }
   }
 
-  Future<void> signOut() async {
+  Future<String> signOut() async {
     try {
       await _firebaseAuth.signOut();
+      return authOperationSuccessful;
     } catch (e) {
       print("Sign out error: $e");
+      return "$e";
     }
   }
 }

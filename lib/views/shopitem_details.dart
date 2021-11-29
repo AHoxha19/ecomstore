@@ -150,61 +150,9 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 40,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      colorLogo[100])),
-                              onPressed: () {
-                                if (shopItem.quantity == 1) return;
-                                setState(() {
-                                  shopItem.quantity -= 1;
-                                });
-                              },
-                              child: Text(
-                                "-",
-                                style: TextStyle(
-                                    fontSize: height * 0.02,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.white)),
-                              onPressed: null,
-                              child: Text(
-                                shopItem.quantity.toString(),
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: height * 0.02,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 40,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      colorLogo[100])),
-                              onPressed: () {
-                                setState(() {
-                                  shopItem.quantity += 1;
-                                });
-                              },
-                              child: Text(
-                                "+",
-                                style: TextStyle(
-                                    fontSize: height * 0.02,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          )
+                          buildButtonMinus(shopItem, height),
+                          buildButtonQuantity(shopItem, height),
+                          buildButtonPlus(shopItem, height)
                         ],
                       ),
                     ],
@@ -246,6 +194,65 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  SizedBox buildButtonQuantity(ShopItem shopItem, double height) {
+    return SizedBox(
+      width: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.white)),
+        onPressed: null,
+        child: Text(
+          shopItem.quantity.toString(),
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: height * 0.02,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  SizedBox buildButtonMinus(ShopItem shopItem, double height) {
+    return SizedBox(
+      width: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(colorLogo[100])),
+        onPressed: () {
+          if (shopItem.quantity == 1) return;
+          setState(() {
+            shopItem.quantity -= 1;
+          });
+        },
+        child: Text(
+          "-",
+          style:
+              TextStyle(fontSize: height * 0.02, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  SizedBox buildButtonPlus(ShopItem shopItem, double height) {
+    return SizedBox(
+      width: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(colorLogo[100])),
+        onPressed: () {
+          setState(() {
+            shopItem.quantity += 1;
+          });
+        },
+        child: Text(
+          "+",
+          style:
+              TextStyle(fontSize: height * 0.02, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

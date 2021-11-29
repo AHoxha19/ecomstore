@@ -38,9 +38,9 @@ class _ProfileInfoState extends State<ProfileInfo> {
         filled: true,
         fillColor: colorLogo[100],
         focusColor: colorLogo[100],
-        focusedBorder: transparentOutlineBorders,
+        focusedBorder: kTransparentOutlineBorders,
         hintText: widget.text,
-        enabledBorder: transparentOutlineBorders,
+        enabledBorder: kTransparentOutlineBorders,
         errorText: _validate ? 'DisplayName can\'t be empty' : null,
         prefixIcon: Icon(
           widget.icon,
@@ -52,8 +52,8 @@ class _ProfileInfoState extends State<ProfileInfo> {
                 color: Colors.black,
               )
             : null,
-        disabledBorder: transparentOutlineBorders,
-        border: transparentOutlineBorders);
+        disabledBorder: kTransparentOutlineBorders,
+        border: kTransparentOutlineBorders);
   }
 
   Widget buildTxtEditingButton() {

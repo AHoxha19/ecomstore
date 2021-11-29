@@ -42,6 +42,6 @@ const kFourthShopItemColor = Color(0xFFc6c1bc);
 const kSuccessColor = Color(0xFF4caf50);
 final kErrorColor = Colors.red[700];
 
-final transparentOutlineBorders = OutlineInputBorder(
+final kTransparentOutlineBorders = OutlineInputBorder(
     borderRadius: BorderRadius.circular(15),
     borderSide: const BorderSide(color: Colors.transparent));

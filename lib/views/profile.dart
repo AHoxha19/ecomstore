@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ecomstore/providers/auth_provider.dart';
 import 'package:ecomstore/utils/show_state.dart';
+import 'package:ecomstore/views/sign_in.dart';
 import 'package:ecomstore/widgets/profile_info.dart';
 import 'package:ecomstore/widgets/profile_pic.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -105,8 +106,13 @@ class _ProfileViewState extends State<ProfileView> {
           ElevatedButton(
               onPressed: () async {
                 //logout
-                await authProvider.signOut();
-                showSnackbarSuccess(context, "Logged out successfully!");
+                final authOperationMessage = await authProvider.signOut();
+                if (authOperationMessage ==
+                    AuthProvider.authOperationSuccessful) {
+                  showSnackbarSuccess(context, "Logged out successfully!");
+                } else {
+                  showSnackbarError(context, authOperationMessage);
+                }
               },
               style: ButtonStyle(
                   backgroundColor:

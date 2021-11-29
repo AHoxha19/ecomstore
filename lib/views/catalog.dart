@@ -80,30 +80,7 @@ class _CatalogViewState extends State<CatalogView> {
                   SizedBox(
                     height: size.height * 0.02,
                   ),
-                  SizedBox(
-                      height: 35,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          return CategoryListItem(
-                              title: items[index],
-                              isSelected: selectedIndex == index,
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                  selectedCategory = items[index];
-                                  setShopItemsList(
-                                      snapshot.data as List<ShopItem>);
-                                });
-                              });
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(
-                            width: 10.0,
-                          );
-                        },
-                      )),
+                  buildCategoriesFilterButtons(snapshot),
                   SizedBox(
                     height: size.height * 0.03,
                   ),
@@ -169,5 +146,32 @@ class _CatalogViewState extends State<CatalogView> {
             color: kLogoColor,
           ));
         });
+  }
+
+  SizedBox buildCategoriesFilterButtons(
+      AsyncSnapshot<List<ShopItem>> snapshot) {
+    return SizedBox(
+        height: 35,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return CategoryListItem(
+                title: items[index],
+                isSelected: selectedIndex == index,
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                    selectedCategory = items[index];
+                    setShopItemsList(snapshot.data as List<ShopItem>);
+                  });
+                });
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(
+              width: 10.0,
+            );
+          },
+        ));
   }
 }
