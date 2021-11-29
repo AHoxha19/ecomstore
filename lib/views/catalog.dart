@@ -53,9 +53,11 @@ class _CatalogViewState extends State<CatalogView> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    /*24 is for notification bar on Android*/
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width / 2;
+
+    print("Height: ${size.height - 100}, Width: ${size.width}");
+
+    print(size.width / (size.height - 170));
+
     _ecomProvider = Provider.of<EcomProvider>(context);
     return StreamBuilder<List<ShopItem>>(
         stream: _ecomProvider.streamShopItems(),
@@ -116,7 +118,7 @@ class _CatalogViewState extends State<CatalogView> {
                   Expanded(
                     child: GridView.count(
                       crossAxisCount: 2,
-                      childAspectRatio: (itemWidth / itemHeight),
+                      childAspectRatio: size.width / (size.height - 150),
                       children: shopItems
                           .map((s) => GestureDetector(
                                 onTap: () {
@@ -130,7 +132,7 @@ class _CatalogViewState extends State<CatalogView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        height: 325,
+                                        height: size.height * 0.3,
                                         decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 fit: BoxFit.fill,
@@ -171,8 +173,9 @@ class _CatalogViewState extends State<CatalogView> {
           }
 
           return const Center(
-            child: Text("Data"),
-          );
+              child: CircularProgressIndicator(
+            color: kLogoColor,
+          ));
         });
   }
 }

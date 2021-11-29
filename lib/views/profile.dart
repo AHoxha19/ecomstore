@@ -1,4 +1,5 @@
-import 'package:ecomstore/constants/constants.dart';
+import 'dart:io';
+
 import 'package:ecomstore/providers/auth_provider.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/widgets/profile_info.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class ProfileView extends StatefulWidget {
   ProfileView({
@@ -23,19 +25,42 @@ class _ProfileViewState extends State<ProfileView> {
   XFile? pickedImage;
   User? user;
 
+  Future<String> uploadFileToFirebaseStorageAndGetUrl(String filePath) async {
+    File file = File(filePath);
+    firebase_storage.Reference fileRef =
+        firebase_storage.FirebaseStorage.instance.ref("user_image");
+
+    try {
+      print("upload image");
+      final taskSnapshot = await fileRef.putFile(file);
+      final downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("upload file error: $e");
+      //could not upload image;
+      rethrow;
+    }
+  }
+
   void editProfileImage() async {
     try {
       pickedImage = await _picker.pickImage(source: ImageSource.gallery);
       print(pickedImage!.name);
       print(pickedImage!.path);
+      print("Hello there");
 
       //now upload to Firebase
       if (pickedImage != null) {
-        await user!.updatePhotoURL(pickedImage!.path);
+        //first update to storage and get URL
+        final downloadUrl =
+            await uploadFileToFirebaseStorageAndGetUrl(pickedImage!.path);
+        //then update imageUrl of user
+        await user!.updatePhotoURL(downloadUrl);
       }
       setState(() {});
     } catch (e) {
       print(e);
+      showSnackbarError(context, e.toString());
     }
   }
 
@@ -44,11 +69,9 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     user = Provider.of<User?>(context);
     final authProvider = Provider.of<AuthProvider>(context);
-    print(user!.photoURL);
-    print(user!.displayName);
+    print("User data: $user");
 
     return SingleChildScrollView(
       child: Column(
@@ -58,7 +81,7 @@ class _ProfileViewState extends State<ProfileView> {
           ),
           ProfilePic(
             onImageEdit: editProfileImage,
-            imagePath: pickedImage == null ? user?.photoURL : pickedImage?.path,
+            imagePath: user?.photoURL,
           ),
           SizedBox(
             height: height * 0.05,

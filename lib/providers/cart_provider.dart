@@ -1,7 +1,7 @@
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:flutter/material.dart';
 
-class CartProvider extends ChangeNotifier {
+class CartProvider with ChangeNotifier {
   final List<ShopItem> _cartShopItems = [];
 
   bool _showBadge = false;

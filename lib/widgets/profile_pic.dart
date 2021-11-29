@@ -5,29 +5,27 @@ import 'package:flutter/material.dart';
 //Modified version of: https://github.com/abuanwar072/E-commerce-Complete-Flutter-UI/blob/master/lib/screens/profile/components/profile_pic.dart
 
 class ProfilePic extends StatelessWidget {
-  ProfilePic({
+  const ProfilePic({
     Key? key,
-    String? imagePath,
+    this.imagePath,
     required this.onImageEdit,
-  }) : super(key: key) {
-    if (imagePath != null) {
-      this.imagePath = imagePath;
-    } else {
-      this.imagePath = "images/profile-placeholder.png";
-    }
-  }
+  }) : super(key: key);
 
-  late final String imagePath;
+  final defaultImagePathUrl = "images/ecomstore_logo_without_text.png";
+
+  final String? imagePath;
   final VoidCallback onImageEdit;
 
   Widget buildProfilePic() {
     return CircleAvatar(
-      backgroundColor: kLogoColor,
-      child: CircleAvatar(
-        radius: 55,
-        backgroundImage: AssetImage(imagePath),
-      ),
-    );
+        backgroundColor: kLogoColor,
+        child: imagePath == null
+            ? CircleAvatar(
+                radius: 55, backgroundImage: AssetImage(defaultImagePathUrl))
+            : CircleAvatar(
+                radius: 55,
+                backgroundImage: NetworkImage(imagePath!),
+              ));
   }
 
   @override

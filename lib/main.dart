@@ -65,6 +65,7 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
                 ChangeNotifierProvider(create: (_) => CartProvider()),
               ],
               child: MaterialApp(
+                debugShowCheckedModeBanner: false,
                 title: 'Ecomstore',
                 theme: ThemeData(
                   primarySwatch: kWhiteColorPrimarySwatch,

@@ -1,3 +1,4 @@
+import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/ecom_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -81,9 +82,10 @@ class FavoriteView extends StatelessWidget {
             );
           }
 
-          return Center(
-            child: Text("Waiting..."),
-          );
+          return const Center(
+              child: CircularProgressIndicator(
+            color: kLogoColor,
+          ));
         });
   }
 }
