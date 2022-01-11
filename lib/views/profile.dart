@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ecomstore/providers/auth_provider.dart';
+import 'package:ecomstore/services/auth_service.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/views/sign_in.dart';
 import 'package:ecomstore/widgets/profile_info.dart';
@@ -25,6 +25,8 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   XFile? pickedImage;
   User? user;
+
+  final _authProvider = AuthService.instance;
 
   Future<String> uploadFileToFirebaseStorageAndGetUrl(String filePath) async {
     File file = File(filePath);
@@ -64,7 +66,6 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     user = Provider.of<User?>(context);
-    final authProvider = Provider.of<AuthProvider>(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -106,9 +107,9 @@ class _ProfileViewState extends State<ProfileView> {
           ElevatedButton(
               onPressed: () async {
                 //logout
-                final authOperationMessage = await authProvider.signOut();
+                final authOperationMessage = await _authProvider.signOut();
                 if (authOperationMessage ==
-                    AuthProvider.authOperationSuccessful) {
+                    AuthService.authOperationSuccessful) {
                   showSnackbarSuccess(context, "Logged out successfully!");
                 } else {
                   showSnackbarError(context, authOperationMessage);

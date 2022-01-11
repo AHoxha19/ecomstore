@@ -1,4 +1,4 @@
-import 'package:ecomstore/providers/auth_provider.dart';
+import 'package:ecomstore/services/auth_service.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/widgets/login_form.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +14,12 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
-  late var authProvider;
+  final _authProvider = AuthService.instance;
 
   void signUpUser(email, password) async {
     final authValue =
-        await authProvider.signUp(email: email, password: password);
-    if (authValue == AuthProvider.authOperationSuccessful) {
+        await _authProvider.signUp(email: email, password: password);
+    if (authValue == AuthService.authOperationSuccessful) {
       Navigator.pop(context);
       showSnackbarSuccess(context, "Sign Up successful, welcome to Ecomstore!");
     } else {
@@ -29,7 +29,6 @@ class _SignUpViewState extends State<SignUpView> {
 
   @override
   Widget build(BuildContext context) {
-    authProvider = Provider.of<AuthProvider>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(

@@ -21,13 +21,6 @@ class EcomstoreService {
         list.docs.map((doc) => ShopItem.fromJson(doc.data())).toList());
   }
 
-  Future<List<ShopItem>> getShopItemsFromFirebase() async {
-    final shopItems =
-        await _firestore.collection(shopItemsCollectionName).get();
-    if (shopItems == null) return [];
-    return shopItems.docs.map((e) => ShopItem.fromJson(e.data())).toList();
-  }
-
   Future<void> setFavorite(ShopItem shopItem) async {
     await _shopItemsCollection.doc(shopItem.id).update(shopItem.toJson());
   }

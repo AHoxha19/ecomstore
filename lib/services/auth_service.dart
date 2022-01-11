@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthProvider {
+class AuthService {
   static const authOperationSuccessful = "success";
 
-  static final AuthProvider _authProvider = AuthProvider._internal();
-  AuthProvider._internal();
-  static AuthProvider get instance => _authProvider;
+  static final AuthService _authProvider = AuthService._internal();
+  AuthService._internal();
+  static AuthService get instance => _authProvider;
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Stream<User?> get authState => _firebaseAuth.idTokenChanges();
+
+  //Bonus only
   Stream<User?> get userChanges => _firebaseAuth.userChanges();
 
   Future<String> signIn(

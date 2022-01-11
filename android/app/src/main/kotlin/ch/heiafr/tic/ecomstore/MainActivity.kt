@@ -1,4 +1,4 @@
-package com.example.ecomstore
+package ch.heiafr.tic.ecomstore
 
 import io.flutter.embedding.android.FlutterActivity
 

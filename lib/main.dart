@@ -1,5 +1,5 @@
 import 'package:ecomstore/constants/constants.dart';
-import 'package:ecomstore/providers/auth_provider.dart';
+import 'package:ecomstore/services/auth_service.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/utils/firebase_initialization_error.dart';
 import 'package:ecomstore/utils/loading_spinner.dart';
@@ -10,13 +10,18 @@ import 'package:ecomstore/views/sign_up.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   //Used for firebase
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const EcomstoreApp());
 }
 
@@ -42,14 +47,11 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
           if (snapshot.connectionState == ConnectionState.done) {
             return MultiProvider(
               providers: [
-                Provider<AuthProvider>(
-                  create: (_) => AuthProvider.instance,
-                ),
                 StreamProvider<User?>.value(
-                    value: AuthProvider.instance.authState, initialData: null),
+                    value: AuthService.instance.authState, initialData: null),
+                //Bonus
                 StreamProvider<User?>.value(
-                    value: AuthProvider.instance.userChanges,
-                    initialData: null),
+                    value: AuthService.instance.userChanges, initialData: null),
                 ChangeNotifierProvider(create: (_) => CartProvider()),
               ],
               child: MaterialApp(
@@ -82,7 +84,7 @@ class Authenticate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
+    final user = context.watch<User?>();
     if (user != null) {
       return const HomeView();
     }

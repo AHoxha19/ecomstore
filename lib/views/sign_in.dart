@@ -1,5 +1,5 @@
 import 'package:ecomstore/constants/constants.dart';
-import 'package:ecomstore/providers/auth_provider.dart';
+import 'package:ecomstore/services/auth_service.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/views/sign_up.dart';
 import 'package:ecomstore/widgets/login_form.dart';
@@ -14,19 +14,18 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
-  late var authProvider;
+  final _authProvider = AuthService.instance;
 
   void signInUser(email, password) async {
     final authValue =
-        await authProvider.signIn(email: email, password: password);
-    if (authValue != AuthProvider.authOperationSuccessful) {
+        await _authProvider.signIn(email: email, password: password);
+    if (authValue != AuthService.authOperationSuccessful) {
       showSnackbarError(context, authValue);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    authProvider = Provider.of<AuthProvider>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(

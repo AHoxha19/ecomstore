@@ -16,7 +16,7 @@ class CartView extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final cartProvider = Provider.of<CartProvider>(context);
+    final cartProvider = context.watch<CartProvider>();
     final ecomstoreService = EcomstoreService.instance;
     final double total = cartProvider.shopItems.fold(
         0, (num prev, element) => prev + element.quantity * element.price);

@@ -28,7 +28,7 @@ class _CatalogViewState extends State<CatalogView> {
 
   String selectedCategory = "All";
 
-  void setShopItemsList(List<ShopItem> shopItemsSnapshot) {
+  void filterShopItems(List<ShopItem> shopItemsSnapshot) {
     switch (selectedCategory) {
       case "All":
         shopItems = shopItemsSnapshot;
@@ -62,7 +62,7 @@ class _CatalogViewState extends State<CatalogView> {
             );
           }
           if (snapshot.hasData) {
-            setShopItemsList(snapshot.data as List<ShopItem>);
+            filterShopItems(snapshot.data as List<ShopItem>);
             return Container(
               color: Colors.grey.shade100,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -163,7 +163,7 @@ class _CatalogViewState extends State<CatalogView> {
                   setState(() {
                     selectedIndex = index;
                     selectedCategory = items[index];
-                    setShopItemsList(snapshot.data as List<ShopItem>);
+                    filterShopItems(snapshot.data as List<ShopItem>);
                   });
                 });
           },
