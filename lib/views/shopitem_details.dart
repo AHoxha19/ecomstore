@@ -1,7 +1,8 @@
+import 'package:ecomstore/api/ecomstore_api.dart';
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
-import 'package:ecomstore/services/ecomstore_service.dart';
+import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/widgets/color_buttons.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,12 +22,12 @@ class ShopItemDetails extends StatefulWidget {
 
 class _ShopItemDetailsState extends State<ShopItemDetails> {
   late CartProvider cartProvider;
-  late EcomstoreService ecomstoreService;
+  late FavoriteProvider favoriteProvider;
 
   @override
   Widget build(BuildContext context) {
     cartProvider = Provider.of<CartProvider>(context);
-    ecomstoreService = EcomstoreService.instance;
+    favoriteProvider = Provider.of<FavoriteProvider>(context);
     return EcomstoreScaffold(body: buildShopItemDetailsWidget(context));
   }
 
@@ -90,7 +91,9 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                             onTap: () {
                               bool tmp = shopItem.favorite;
                               shopItem.favorite = !shopItem.favorite;
-                              ecomstoreService.setFavorite(shopItem).then((_) {
+                              favoriteProvider
+                                  .setFavorite(shopItem.id, shopItem.favorite)
+                                  .then((_) {
                                 if (heartIcon.icon == CupertinoIcons.heart) {
                                   setIconFavorite();
                                   shopItem.favorite = true;
@@ -104,6 +107,7 @@ class _ShopItemDetailsState extends State<ShopItemDetails> {
                                 setState(() {});
                               }).catchError((error) {
                                 shopItem.favorite = tmp;
+                                setState(() {});
                               });
                             },
                             child: heartIcon)

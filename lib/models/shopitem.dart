@@ -15,14 +15,16 @@ class ShopItem {
       required this.price,
       required this.favorite});
 
-  ShopItem.fromJson(Map<String, Object?> json)
-      : this(
-            id: json['id']! as String,
-            name: json['name']! as String,
-            category: json['category']! as String,
-            imageUrl: json['imageUrl']! as String,
-            price: convertToDouble(json['price']!),
-            favorite: json['favorite']! as bool);
+  static fromJson(Map<String, Object?> json) {
+    final shopi = ShopItem(
+        id: json['id']! as String,
+        name: json['name']! as String,
+        category: json['category']! as String,
+        imageUrl: json['imageUrl']! as String,
+        price: convertToDouble(json['price']!),
+        favorite: json['favorite']! as bool);
+    return shopi;
+  }
 
   Map<String, Object?> toJson() {
     return {

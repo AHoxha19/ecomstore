@@ -20,16 +20,17 @@ class PaymentDialog extends StatefulWidget {
 
   final Widget content;
   final double total;
-  final Function onPay;
+  final Future<void> Function() onPay;
 
   @override
   State<PaymentDialog> createState() => _PaymentDialogState();
 }
 
 class _PaymentDialogState extends State<PaymentDialog> {
-  late Timer _timer;
   late Widget contentToShow;
   PaymentState paymentState = PaymentState.waiting;
+  String errorMessage = "";
+  bool hasError = false;
 
   Widget buildLoadingPayment(width, height) {
     return SizedBox(
@@ -42,20 +43,31 @@ class _PaymentDialogState extends State<PaymentDialog> {
         ));
   }
 
-  Widget buildSuccessPayment(width, height) {
+  Widget buildPayment(width, height) {
     return SizedBox(
       width: width,
       height: height,
-      child: Column(
-        children: const [
-          Icon(
-            Icons.done,
-            size: 100,
-            color: kSuccessColor,
-          ),
-          Text("Thanks for your order !"),
-        ],
-      ),
+      child: hasError
+          ? Column(
+              children: [
+                Icon(
+                  Icons.error,
+                  size: 100,
+                  color: kErrorColor,
+                ),
+                Text("Transaction failed. Error: $errorMessage"),
+              ],
+            )
+          : Column(
+              children: const [
+                Icon(
+                  Icons.done,
+                  size: 100,
+                  color: kSuccessColor,
+                ),
+                Text("Thanks for your order !"),
+              ],
+            ),
     );
   }
 
@@ -65,16 +77,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
     contentToShow = widget.content;
   }
 
-  void startTimer(width, height) {
-    _timer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        contentToShow = buildSuccessPayment(width, height);
-        widget.onPay();
-        paymentState = PaymentState.done;
-      });
-      //Navigator.pop(context);
-    });
-  }
+  void startTimer(width, height) {}
 
   @override
   Widget build(BuildContext context) {
@@ -101,12 +104,22 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(kLogoColor)),
                     onPressed: () {
-                      setState(() {
-                        contentToShow =
-                            buildLoadingPayment(width * 0.1, height * 0.2);
-                        paymentState = PaymentState.loading;
+                      widget.onPay().then((value) {
+                        setState(() {
+                          contentToShow =
+                              buildPayment(width * 0.1, height * 0.2);
+                          paymentState = PaymentState.done;
+                        });
+                      }).catchError((error) {
+                        print("Error in dialog: $error");
+                        setState(() {
+                          hasError = true;
+                          errorMessage = error.toString();
+                          contentToShow =
+                              buildPayment(width * 0.1, height * 0.2);
+                        });
                       });
-                      startTimer(width * 0.1, height * 0.2);
+                      //
                     },
                     child: const Text(
                       "Pay",

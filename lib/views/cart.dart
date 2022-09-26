@@ -1,26 +1,35 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
-import 'package:ecomstore/services/ecomstore_service.dart';
+import 'package:ecomstore/api/ecomstore_api.dart';
 import 'package:ecomstore/widgets/payment_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class CartView extends StatelessWidget {
+class CartView extends StatefulWidget {
   const CartView({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<CartView> createState() => _CartViewState();
+}
+
+class _CartViewState extends State<CartView> {
+  bool hasError = false;
+  String errorMessage = "";
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final cartProvider = context.watch<CartProvider>();
-    final ecomstoreService = EcomstoreService.instance;
+    final ecomstoreService = EcomstoreApi.instance;
     final double total = cartProvider.shopItems.fold(
         0, (num prev, element) => prev + element.quantity * element.price);
 
+    print("CART REBUILD");
     if (cartProvider.shopItems.isEmpty) {
       return Center(
         child: Column(
@@ -116,11 +125,7 @@ class CartView extends StatelessWidget {
                                       .toList(),
                                 ),
                               ),
-                              onPay: () async {
-                                await ecomstoreService
-                                    .removeFavorites(cartProvider.shopItems);
-                                cartProvider.pay();
-                              });
+                              onPay: cartProvider.pay);
                         });
                   },
                   style: ButtonStyle(

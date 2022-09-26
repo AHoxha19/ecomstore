@@ -1,10 +1,12 @@
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/models/shopitem.dart';
-import 'package:ecomstore/services/ecomstore_service.dart';
+import 'package:ecomstore/providers/catalog_provider.dart';
+import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class CatalogView extends StatefulWidget {
   const CatalogView({
@@ -17,7 +19,6 @@ class CatalogView extends StatefulWidget {
 
 class _CatalogViewState extends State<CatalogView> {
   int selectedIndex = 0;
-  List<ShopItem> shopItems = [];
 
   final List<String> items = [
     "All",
@@ -28,128 +29,106 @@ class _CatalogViewState extends State<CatalogView> {
 
   String selectedCategory = "All";
 
-  void filterShopItems(List<ShopItem> shopItemsSnapshot) {
-    switch (selectedCategory) {
-      case "All":
-        shopItems = shopItemsSnapshot;
-        break;
-      case "Hat":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "hat").toList();
-        break;
-      case "Jacket":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "jacket").toList();
-        break;
-      case "Sneaker":
-        shopItems =
-            shopItemsSnapshot.where((s) => s.category == "sneaker").toList();
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final ecomstoreService = EcomstoreService.instance;
-    return StreamBuilder<List<ShopItem>>(
-        stream: ecomstoreService.streamShopItems(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            //show Error
-            return Center(
-              child: Text("Error getting Shop Items:\n ${snapshot.error}"),
-            );
-          }
-          if (snapshot.hasData) {
-            filterShopItems(snapshot.data as List<ShopItem>);
-            return Container(
-              color: Colors.grey.shade100,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Browse By Category",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+    final catalogProvider = Provider.of<CatalogProvider>(context);
+    final favoriteProvider = context.read<FavoriteProvider>();
+    favoriteProvider.status = FavoriteStatus.initial;
+    switch (catalogProvider.status) {
+      case CatalogStatus.initial:
+        catalogProvider.getShopItems();
+        return const Center(
+            child: CircularProgressIndicator(
+          color: kLogoColor,
+        ));
+      case CatalogStatus.loading:
+        return const Center(
+            child: CircularProgressIndicator(
+          color: kLogoColor,
+        ));
+      case CatalogStatus.success:
+        return Container(
+          color: Colors.grey.shade100,
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    "Browse By Category",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
-                    height: size.height * 0.02,
-                  ),
-                  buildCategoriesFilterButtons(snapshot),
-                  SizedBox(
-                    height: size.height * 0.03,
-                  ),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: size.width / (size.height - 150),
-                      children: shopItems
-                          .map((s) => GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, ShopItemDetails.routeName,
-                                      arguments: s);
-                                },
-                                child: Card(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: size.height * 0.3,
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image:
-                                                    NetworkImage(s.imageUrl))),
-                                      ),
-                                      const Divider(
-                                        height: 3,
-                                        color: kLogoColor,
-                                        thickness: 3,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 8.0),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                s.name,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text("${s.price.toString()} CHF")
-                                            ]),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                  )
                 ],
               ),
-            );
-          }
-
-          return const Center(
-              child: CircularProgressIndicator(
-            color: kLogoColor,
-          ));
-        });
+              SizedBox(
+                height: size.height * 0.02,
+              ),
+              buildCategoriesFilterButtons(catalogProvider),
+              SizedBox(
+                height: size.height * 0.03,
+              ),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: size.width / (size.height - 150),
+                  children: catalogProvider.catalogShopItems
+                      .map((s) => GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, ShopItemDetails.routeName,
+                                  arguments: s);
+                            },
+                            child: Card(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: size.height * 0.3,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(s.imageUrl))),
+                                  ),
+                                  const Divider(
+                                    height: 3,
+                                    color: kLogoColor,
+                                    thickness: 3,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 8.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            s.name,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text("${s.price.toString()} CHF")
+                                        ]),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              )
+            ],
+          ),
+        );
+      case CatalogStatus.error:
+        return Center(
+          child: Text(catalogProvider.errorMessage),
+        );
+    }
   }
 
-  SizedBox buildCategoriesFilterButtons(
-      AsyncSnapshot<List<ShopItem>> snapshot) {
+  SizedBox buildCategoriesFilterButtons(CatalogProvider provider) {
     return SizedBox(
         height: 35,
         child: ListView.separated(
@@ -163,7 +142,7 @@ class _CatalogViewState extends State<CatalogView> {
                   setState(() {
                     selectedIndex = index;
                     selectedCategory = items[index];
-                    filterShopItems(snapshot.data as List<ShopItem>);
+                    provider.filterShopItems(selectedCategory);
                   });
                 });
           },

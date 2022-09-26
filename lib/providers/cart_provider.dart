@@ -1,8 +1,14 @@
 import 'package:ecomstore/models/shopitem.dart';
+import 'package:ecomstore/repository/ecomstore_repository.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider with ChangeNotifier {
   final List<ShopItem> _cartShopItems = [];
+
+  final EcomStoreRepository ecomstoreRepository;
+
+  CartProvider({required EcomStoreRepository repository})
+      : ecomstoreRepository = repository;
 
   bool _showBadge = false;
   bool get showBadge => _showBadge;
@@ -17,9 +23,15 @@ class CartProvider with ChangeNotifier {
 
   List<ShopItem> get shopItems => _cartShopItems;
 
-  void pay() {
-    _cartShopItems.clear();
-    notifyListeners();
+  Future<void> pay() async {
+    try {
+      await ecomstoreRepository.removeAllFavorites();
+      _cartShopItems.clear();
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   void addToCart(ShopItem shopItem) {

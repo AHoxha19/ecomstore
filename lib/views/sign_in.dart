@@ -1,5 +1,5 @@
 import 'package:ecomstore/constants/constants.dart';
-import 'package:ecomstore/services/auth_service.dart';
+import 'package:ecomstore/api/auth_service.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/views/sign_up.dart';
 import 'package:ecomstore/widgets/login_form.dart';
@@ -14,14 +14,14 @@ class SignInView extends StatefulWidget {
 }
 
 class _SignInViewState extends State<SignInView> {
-  final _authProvider = AuthService.instance;
+  //final _authProvider = AuthService.instance;
 
   void signInUser(email, password) async {
-    final authValue =
+    /* final authValue =
         await _authProvider.signIn(email: email, password: password);
     if (authValue != AuthService.authOperationSuccessful) {
       showSnackbarError(context, authValue);
-    }
+    }*/
   }
 
   @override

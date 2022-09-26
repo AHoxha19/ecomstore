@@ -1,17 +1,15 @@
 import 'dart:io';
 
-import 'package:ecomstore/services/auth_service.dart';
+import 'package:ecomstore/api/auth_service.dart';
 import 'package:ecomstore/utils/show_state.dart';
 import 'package:ecomstore/views/sign_in.dart';
 import 'package:ecomstore/widgets/profile_info.dart';
 import 'package:ecomstore/widgets/profile_pic.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class ProfileView extends StatefulWidget {
   const ProfileView({
@@ -24,19 +22,15 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   XFile? pickedImage;
-  User? user;
+  //User? user;
 
-  final _authProvider = AuthService.instance;
+  //final _authProvider = AuthService.instance;
 
   Future<String> uploadFileToFirebaseStorageAndGetUrl(String filePath) async {
     File file = File(filePath);
-    firebase_storage.Reference fileRef =
-        firebase_storage.FirebaseStorage.instance.ref("user_image");
 
     try {
-      final taskSnapshot = await fileRef.putFile(file);
-      final downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      return downloadUrl;
+      return "";
     } catch (e) {
       //could not upload image;
       rethrow;
@@ -52,7 +46,7 @@ class _ProfileViewState extends State<ProfileView> {
         final downloadUrl =
             await uploadFileToFirebaseStorageAndGetUrl(pickedImage!.path);
         //then update imageUrl of user
-        await user!.updatePhotoURL(downloadUrl);
+        //await user!.updatePhotoURL(downloadUrl);
       }
       setState(() {});
     } catch (e) {
@@ -65,28 +59,29 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    user = Provider.of<User?>(context);
+    //user = Provider.of<User?>(context);
     return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
             height: height * 0.05,
           ),
-          ProfilePic(
+         /* ProfilePic(
             onImageEdit: editProfileImage,
             imagePath: user?.photoURL,
-          ),
+          ),*/
           SizedBox(
             height: height * 0.05,
           ),
           ProfileInfo(
-              text: user!.displayName ??
+              text: //user!.displayName
+              null ??
                   "DisplayName is not set, click to edit...",
               icon: CupertinoIcons.profile_circled,
               type: ProfileInfoType.displayName,
               onSubmitted: (value) async {
                 try {
-                  await user!.updateDisplayName(value);
+                  //await user!.updateDisplayName(value);
                   showSnackbarSuccess(
                       context, "DisplayName changed successfully!");
                 } catch (e) {
@@ -97,7 +92,7 @@ class _ProfileViewState extends State<ProfileView> {
             height: height * 0.02,
           ),
           ProfileInfo(
-            text: "${user!.email}",
+            text: "email",
             icon: CupertinoIcons.mail,
             type: ProfileInfoType.email,
           ),
@@ -107,13 +102,13 @@ class _ProfileViewState extends State<ProfileView> {
           ElevatedButton(
               onPressed: () async {
                 //logout
-                final authOperationMessage = await _authProvider.signOut();
-                if (authOperationMessage ==
+                //final authOperationMessage = await _authProvider.signOut();
+                /*if (authOperationMessage ==
                     AuthService.authOperationSuccessful) {
                   showSnackbarSuccess(context, "Logged out successfully!");
                 } else {
                   showSnackbarError(context, authOperationMessage);
-                }
+                }*/
               },
               style: ButtonStyle(
                   backgroundColor:

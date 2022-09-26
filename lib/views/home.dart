@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:ecomstore/constants/constants.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/views/profile.dart';
+import 'package:ecomstore/views/settings.dart';
 import 'package:ecomstore/widgets/ecomstore_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _HomeViewState extends State<HomeView> {
     const CatalogView(),
     const FavoriteView(),
     const CartView(),
-    const ProfileView()
+    const SettingsView()
   ];
 
   void _onItemTapped(int index) {
@@ -77,9 +78,9 @@ class _HomeViewState extends State<HomeView> {
         ),
         const BottomNavigationBarItem(
           icon: Icon(
-            CupertinoIcons.profile_circled,
+            CupertinoIcons.settings,
           ),
-          label: 'Profile',
+          label: 'Settings',
         ),
       ],
       currentIndex: _selectedIndex,
