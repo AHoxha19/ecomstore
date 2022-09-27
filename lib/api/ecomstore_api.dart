@@ -36,6 +36,19 @@ class EcomstoreApi {
     }
   }
 
+  Future<bool> addShopItem(ShopItem item) async {
+    try {
+      final res =
+          await _dio.post('$ecomstoreServerUrl/shopitems', data: item.toJson());
+      print(res);
+      return true;
+    } on DioError catch (e) {
+      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
+    } catch (e) {
+      throw Exception("Unexpected error: $e");
+    }
+  }
+
   Future<List<ShopItem>> getFavoriteShopItems() async {
     try {
       final res = await _dio.get('$ecomstoreServerUrl/shopitems/favorites');
@@ -50,7 +63,7 @@ class EcomstoreApi {
     }
   }
 
-  Future<void> setFavorite(String id, bool value) async {
+  Future<void> setFavorite(int id, bool value) async {
     try {
       final res = await _dio.put("$ecomstoreServerUrl/shopitems/$id/favorite",
           data: jsonEncode({"favorite": value}));

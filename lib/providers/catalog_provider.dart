@@ -16,6 +16,8 @@ class CatalogProvider with ChangeNotifier {
 
   CatalogStatus status = CatalogStatus.initial;
 
+  ShopItem shopItemToAdd = ShopItem.empty();
+
   CatalogProvider({required EcomStoreRepository repository})
       : ecomstoreRepository = repository {
     initCatalog();
@@ -38,6 +40,21 @@ class CatalogProvider with ChangeNotifier {
       status = CatalogStatus.error;
       errorMessage =
           "There was an error fetching shopItems: ${error.toString()}";
+      notifyListeners();
+    }
+  }
+
+  addShopItem() async {
+    try {
+      await ecomstoreRepository.addShopItem(shopItemToAdd);
+      shopItemToAdd = ShopItem.empty();
+      status = CatalogStatus.initial;
+      notifyListeners();
+    } catch (error, stack) {
+      print("Error getting data: $error");
+      status = CatalogStatus.error;
+      errorMessage =
+          "There was an error adding a shopItem: ${error.toString()}";
       notifyListeners();
     }
   }

@@ -1,9 +1,9 @@
 class ShopItem {
-  final String id;
-  final String name;
-  final String category;
-  final String imageUrl;
-  final double price;
+  int id;
+  String name;
+  String category;
+  String imageUrl;
+  double price;
   bool favorite;
   int quantity = 1;
 
@@ -15,9 +15,20 @@ class ShopItem {
       required this.price,
       required this.favorite});
 
+  static ShopItem empty() {
+    return ShopItem(
+        id: 0,
+        name: "",
+        category: "jacket",
+        imageUrl:
+            "https://mountain-kit.co.uk/images/montane-mens-jagged-ice-jacket-sample-p509-5440_image.jpg",
+        price: 0,
+        favorite: false);
+  }
+
   static fromJson(Map<String, Object?> json) {
     final shopi = ShopItem(
-        id: json['id']! as String,
+        id: json['id']! as int,
         name: json['name']! as String,
         category: json['category']! as String,
         imageUrl: json['imageUrl']! as String,

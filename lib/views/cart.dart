@@ -25,11 +25,9 @@ class _CartViewState extends State<CartView> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final cartProvider = context.watch<CartProvider>();
-    final ecomstoreService = EcomstoreApi.instance;
     final double total = cartProvider.shopItems.fold(
         0, (num prev, element) => prev + element.quantity * element.price);
 
-    print("CART REBUILD");
     if (cartProvider.shopItems.isEmpty) {
       return Center(
         child: Column(

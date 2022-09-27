@@ -40,7 +40,7 @@ class FavoriteProvider with ChangeNotifier {
     }
   }
 
-  setFavorite(String id, bool favorite) async {
+  setFavorite(int id, bool favorite) async {
     try {
       await ecomstoreRepository.setFavorite(id, favorite);
       await getFavorites();
