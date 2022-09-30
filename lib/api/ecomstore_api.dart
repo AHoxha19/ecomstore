@@ -65,7 +65,7 @@ class EcomstoreApi {
 
   Future<void> setFavorite(int id, bool value) async {
     try {
-      final res = await _dio.put("$ecomstoreServerUrl/shopitems/$id/favorite",
+      final res = await _dio.put("$ecomstoreServerUrl/shopitems/$id/favorites",
           data: jsonEncode({"favorite": value}));
       print(res);
     } on DioError catch (e) {
