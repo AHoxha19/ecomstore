@@ -1,33 +1,21 @@
 import 'package:ecomstore/api/ecomstore_api.dart';
 import 'package:ecomstore/constants/constants.dart';
-import 'package:ecomstore/api/auth_service.dart';
 import 'package:ecomstore/providers/cart_provider.dart';
 import 'package:ecomstore/providers/catalog_provider.dart';
 import 'package:ecomstore/providers/favorite_provider.dart';
 import 'package:ecomstore/providers/settings_provider.dart';
 import 'package:ecomstore/repository/ecomstore_repository.dart';
-import 'package:ecomstore/utils/firebase_initialization_error.dart';
-import 'package:ecomstore/utils/loading_spinner.dart';
 import 'package:ecomstore/views/home.dart';
 import 'package:ecomstore/views/sign_in.dart';
 import 'package:ecomstore/views/shopitem_details.dart';
 import 'package:ecomstore/views/sign_up.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   runApp(const Settings());
 }
 
