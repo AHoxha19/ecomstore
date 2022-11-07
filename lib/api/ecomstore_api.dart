@@ -1,36 +1,48 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:ecomstore/api/shopItem.pbgrpc.dart' as shop_item_grpc;
 import 'package:ecomstore/models/shopitem.dart';
+import 'package:grpc/grpc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EcomstoreApi {
   //Singleton declaration
   static final EcomstoreApi _ecomstoreApiInstance = EcomstoreApi._internal();
-  EcomstoreApi._internal();
+  EcomstoreApi._internal() {
+    setChannel();
+  }
 
   static EcomstoreApi get instance => _ecomstoreApiInstance;
 
   //End Singleton declaration
 
-  final _dio = Dio();
-  late String ecomstoreServerUrl;
+  String ecomstoreServerUrl = "http://127.0.0.1:5019";
 
-  final _shopItemStreamController = BehaviorSubject<List<ShopItem>>();
+  setChannel() {
+    print(int.parse(ecomstoreServerUrl.split(":")[2]));
+    print(Uri.parse(ecomstoreServerUrl).host);
+    channel = ClientChannel(Uri.parse(ecomstoreServerUrl).host,
+        port: Uri.parse(ecomstoreServerUrl).port,
+        options:
+            const ChannelOptions(credentials: ChannelCredentials.insecure()));
+  }
 
-  final List<ShopItem> _shopItems = [];
+  late ClientChannel channel;
 
   Future<List<ShopItem>> getShopItems() async {
     try {
-      final res = await _dio.get('$ecomstoreServerUrl/shopitems');
-      final shopItems =
-          List<ShopItem>.from(res.data.map((i) => ShopItem.fromJson(i)));
-      print(shopItems);
-      print(shopItems is List<ShopItem>);
+      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      final res = await stub.getAllShopItems(shop_item_grpc.Empty());
+
+      final shopItems = List<ShopItem>.from(res.shopItems.map((i) => ShopItem(
+          id: i.id,
+          name: i.name,
+          category: i.category.name,
+          imageUrl: i.imageUrl,
+          price: i.price,
+          favorite: i.favorite)));
       return shopItems;
-    } on DioError catch (e) {
-      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -38,12 +50,19 @@ class EcomstoreApi {
 
   Future<bool> addShopItem(ShopItem item) async {
     try {
-      final res =
-          await _dio.post('$ecomstoreServerUrl/shopitems', data: item.toJson());
+      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      final res = await stub.addShopItem(shop_item_grpc.AddShopItem(
+          shopItem: shop_item_grpc.ShopItem(
+              id: item.id,
+              favorite: item.favorite,
+              category: shop_item_grpc.CategoryShopItem.values
+                  .where((element) => element.name == item.category)
+                  .first,
+              imageUrl: item.imageUrl,
+              name: item.name,
+              price: item.price)));
       print(res);
       return true;
-    } on DioError catch (e) {
-      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -51,13 +70,16 @@ class EcomstoreApi {
 
   Future<List<ShopItem>> getFavoriteShopItems() async {
     try {
-      final res = await _dio.get('$ecomstoreServerUrl/shopitems/favorites');
-      print(res.data);
-      final shopItems =
-          List<ShopItem>.from(res.data.map((i) => ShopItem.fromJson(i)));
+      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      final res = await stub.getAllFavorites(shop_item_grpc.Empty());
+      final shopItems = List<ShopItem>.from(res.shopItems.map((i) => ShopItem(
+          id: i.id,
+          name: i.name,
+          category: i.category.name,
+          imageUrl: i.imageUrl,
+          price: i.price,
+          favorite: i.favorite)));
       return shopItems;
-    } on DioError catch (e) {
-      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -65,11 +87,9 @@ class EcomstoreApi {
 
   Future<void> setFavorite(int id, bool value) async {
     try {
-      final res = await _dio.put("$ecomstoreServerUrl/shopitems/$id/favorites",
-          data: jsonEncode({"favorite": value}));
-      print(res);
-    } on DioError catch (e) {
-      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
+      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      await stub.setFavorite(
+          shop_item_grpc.SetFavoriteRequest(id: id, favorite: value));
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -77,28 +97,10 @@ class EcomstoreApi {
 
   Future<void> removeFavorites() async {
     try {
-      final res = await _dio.delete("$ecomstoreServerUrl/shopitems/favorites");
-    } on DioError catch (e) {
-      throw Exception("HTTP Error: ${e.error}, message: ${e.message}");
+      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      await stub.deleteAllFavorite(shop_item_grpc.Empty());
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
-  }
-
-  Future<void> deleteShopItem(String id) async {
-    final todos = [..._shopItemStreamController.value];
-    todos.removeWhere((t) => t.id == id);
-    _shopItemStreamController.add(todos);
-  }
-
-  Future<void> saveTodo(ShopItem shopItem) async {
-    final todos = [..._shopItemStreamController.value];
-    final todoIndex = todos.indexWhere((t) => t.id == shopItem.id);
-    if (todoIndex >= 0) {
-      todos[todoIndex] = shopItem;
-    } else {
-      todos.add(shopItem);
-    }
-    _shopItemStreamController.add(todos);
   }
 }

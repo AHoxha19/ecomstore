@@ -45,6 +45,7 @@ class FavoriteProvider with ChangeNotifier {
       await ecomstoreRepository.setFavorite(id, favorite);
       await getFavorites();
     } catch (e) {
+      print("error setting favorite");
       status = FavoriteStatus.error;
       notifyListeners();
     }

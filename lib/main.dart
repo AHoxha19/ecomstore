@@ -19,15 +19,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   runApp(const Settings());
 }
 
@@ -58,6 +51,13 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
     EcomstoreApi.instance.ecomstoreServerUrl = settingsProvider.serverUrl;
+    try {
+      EcomstoreApi.instance.setChannel();
+    } catch (e) {
+      print("Error in setChannel");
+      print(e);
+      settingsProvider.changeServerUrl("Error");
+    }
 
     final EcomStoreRepository ecomStoreRepository =
         EcomStoreRepository(ecomstoreApi: EcomstoreApi.instance);

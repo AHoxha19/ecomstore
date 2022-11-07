@@ -11,15 +11,10 @@ class EcomStoreRepository {
 
   Future<bool> addShopItem(ShopItem item) => _ecomstoreApi.addShopItem(item);
 
-  Future<void> saveShopItem(ShopItem shopItem) =>
-      _ecomstoreApi.saveTodo(shopItem);
-
   Future<List<ShopItem>> getFavorites() => _ecomstoreApi.getFavoriteShopItems();
 
   Future<void> removeAllFavorites() => _ecomstoreApi.removeFavorites();
 
   Future<void> setFavorite(int id, bool value) =>
       _ecomstoreApi.setFavorite(id, value);
-
-  Future<void> deleteShopItem(String id) => _ecomstoreApi.deleteShopItem(id);
 }
