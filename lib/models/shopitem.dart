@@ -50,6 +50,7 @@ class ShopItem {
 
   static double convertToDouble(Object jsonPrice) {
     if (jsonPrice is int) {
+      print("price is int");
       return jsonPrice.toDouble();
     } else if (jsonPrice is double) {
       return jsonPrice;

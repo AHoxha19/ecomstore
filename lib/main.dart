@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -52,7 +53,7 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
 
     EcomstoreApi.instance.ecomstoreServerUrl = settingsProvider.serverUrl;
     try {
-      EcomstoreApi.instance.setChannel();
+      EcomstoreApi.instance.setServerUrl();
     } catch (e) {
       print("Error in setChannel");
       print(e);
@@ -70,22 +71,26 @@ class _EcomstoreAppState extends State<EcomstoreApp> {
         ChangeNotifierProvider(
             create: (_) => FavoriteProvider(repository: ecomStoreRepository))
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Ecomstore',
-        theme: ThemeData(
-          primarySwatch: kWhiteColorPrimarySwatch,
-          textTheme: GoogleFonts.montserratTextTheme(
-            Theme.of(context).textTheme,
+      child: GraphQLProvider(
+        client: ValueNotifier(GraphQLClient(
+            link: HttpLink("http://10.0.2.2:4000/"), cache: GraphQLCache())),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Ecomstore',
+          theme: ThemeData(
+            primarySwatch: kWhiteColorPrimarySwatch,
+            textTheme: GoogleFonts.montserratTextTheme(
+              Theme.of(context).textTheme,
+            ),
           ),
+          routes: {
+            HomeView.routeName: (context) => const HomeView(),
+            SignInView.routeName: (context) => const SignInView(),
+            SignUpView.routeName: (context) => const SignUpView(),
+            ShopItemDetails.routeName: (context) => const ShopItemDetails()
+          },
+          home: const Authenticate(),
         ),
-        routes: {
-          HomeView.routeName: (context) => const HomeView(),
-          SignInView.routeName: (context) => const SignInView(),
-          SignUpView.routeName: (context) => const SignUpView(),
-          ShopItemDetails.routeName: (context) => const ShopItemDetails()
-        },
-        home: const Authenticate(),
       ),
     );
   }

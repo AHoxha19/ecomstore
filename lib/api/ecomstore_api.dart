@@ -1,16 +1,15 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:ecomstore/api/shopItem.pbgrpc.dart' as shop_item_grpc;
 import 'package:ecomstore/models/shopitem.dart';
-import 'package:grpc/grpc.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EcomstoreApi {
   //Singleton declaration
   static final EcomstoreApi _ecomstoreApiInstance = EcomstoreApi._internal();
   EcomstoreApi._internal() {
-    setChannel();
+    setServerUrl();
   }
 
   static EcomstoreApi get instance => _ecomstoreApiInstance;
@@ -18,30 +17,47 @@ class EcomstoreApi {
   //End Singleton declaration
 
   String ecomstoreServerUrl = "http://127.0.0.1:5019";
+  late GraphQLClient client;
 
-  setChannel() {
-    print(int.parse(ecomstoreServerUrl.split(":")[2]));
+  setServerUrl() {
+/*    print(int.parse(ecomstoreServerUrl.split(":")[2]));
     print(Uri.parse(ecomstoreServerUrl).host);
-    channel = ClientChannel(Uri.parse(ecomstoreServerUrl).host,
-        port: Uri.parse(ecomstoreServerUrl).port,
-        options:
-            const ChannelOptions(credentials: ChannelCredentials.insecure()));
+
+    Uri.parse(ecomstoreServerUrl).host;
+    Uri.parse(ecomstoreServerUrl).port;*/
+
+    client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: HttpLink(ecomstoreServerUrl),
+    );
   }
 
-  late ClientChannel channel;
+  String _queryGetShopItems = """
+  query{
+    getAllShopItems{
+       id,
+      name,
+      imageUrl,
+      category,
+      price,
+      favorite
+    }
+  }
+  """;
 
   Future<List<ShopItem>> getShopItems() async {
     try {
-      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
-      final res = await stub.getAllShopItems(shop_item_grpc.Empty());
-
-      final shopItems = List<ShopItem>.from(res.shopItems.map((i) => ShopItem(
-          id: i.id,
-          name: i.name,
-          category: i.category.name,
-          imageUrl: i.imageUrl,
-          price: i.price,
-          favorite: i.favorite)));
+      final res =
+          await client.query(QueryOptions(document: gql(_queryGetShopItems)));
+      print(res);
+      final shopItems = List<ShopItem>.from(res.data?['getAllShopItems'].map(
+          (i) => ShopItem(
+              id: int.parse(i['id']!),
+              name: i['name']! as String,
+              category: i['category']! as String,
+              imageUrl: i['imageUrl']! as String,
+              price: ShopItem.convertToDouble(i['price']!),
+              favorite: i['favorite']! as bool)));
       return shopItems;
     } catch (e) {
       throw Exception("Unexpected error: $e");
@@ -50,18 +66,6 @@ class EcomstoreApi {
 
   Future<bool> addShopItem(ShopItem item) async {
     try {
-      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
-      final res = await stub.addShopItem(shop_item_grpc.AddShopItem(
-          shopItem: shop_item_grpc.ShopItem(
-              id: item.id,
-              favorite: item.favorite,
-              category: shop_item_grpc.CategoryShopItem.values
-                  .where((element) => element.name == item.category)
-                  .first,
-              imageUrl: item.imageUrl,
-              name: item.name,
-              price: item.price)));
-      print(res);
       return true;
     } catch (e) {
       throw Exception("Unexpected error: $e");
@@ -70,7 +74,7 @@ class EcomstoreApi {
 
   Future<List<ShopItem>> getFavoriteShopItems() async {
     try {
-      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      /* final stub = shop_item_grpc.ShopItemsServiceClient(channel);
       final res = await stub.getAllFavorites(shop_item_grpc.Empty());
       final shopItems = List<ShopItem>.from(res.shopItems.map((i) => ShopItem(
           id: i.id,
@@ -79,7 +83,8 @@ class EcomstoreApi {
           imageUrl: i.imageUrl,
           price: i.price,
           favorite: i.favorite)));
-      return shopItems;
+      return shopItems;*/
+      return [];
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -87,9 +92,9 @@ class EcomstoreApi {
 
   Future<void> setFavorite(int id, bool value) async {
     try {
-      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      /*final stub = shop_item_grpc.ShopItemsServiceClient(channel);
       await stub.setFavorite(
-          shop_item_grpc.SetFavoriteRequest(id: id, favorite: value));
+          shop_item_grpc.SetFavoriteRequest(id: id, favorite: value));*/
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
@@ -97,8 +102,8 @@ class EcomstoreApi {
 
   Future<void> removeFavorites() async {
     try {
-      final stub = shop_item_grpc.ShopItemsServiceClient(channel);
-      await stub.deleteAllFavorite(shop_item_grpc.Empty());
+      /*final stub = shop_item_grpc.ShopItemsServiceClient(channel);
+      await stub.deleteAllFavorite(shop_item_grpc.Empty());*/
     } catch (e) {
       throw Exception("Unexpected error: $e");
     }
