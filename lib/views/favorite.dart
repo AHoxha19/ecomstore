@@ -22,6 +22,8 @@ class FavoriteView extends StatelessWidget {
     final favoriteProvider = Provider.of<FavoriteProvider>(context);
     final catalogProvider = context.read<CatalogProvider>();
     catalogProvider.status = CatalogStatus.initial;
+    print("FAVORITE STATUS:");
+    print(favoriteProvider.status);
 
     switch (favoriteProvider.status) {
       case FavoriteStatus.initial:
